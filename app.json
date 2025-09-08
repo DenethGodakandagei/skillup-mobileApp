@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Sample-React-Native-App",
-    "slug": "Sample-React-Native-App",
+    "name": "Skill Up",
+    "slug": "Skill Up",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

@@ -31,9 +31,10 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   tagline: {
-    fontSize: 16,
+    fontSize: 15,
     color: COLORS.darkGrey,
     letterSpacing: 1,
+    textAlign: "center",
     textTransform: "lowercase",
   },
   illustrationContainer: {
