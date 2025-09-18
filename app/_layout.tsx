@@ -1,4 +1,5 @@
 import InitialLayout from "@/components/InitialLayout";
+import { AppProvider } from "@/context/AppContext";
 import ClerkAndConvexProvider from "@/providers/ClerkAndConvexProvider";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -15,7 +16,9 @@ export default function RootLayout() {
     <ClerkAndConvexProvider>
       <SafeAreaProvider>
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-          <InitialLayout/>
+          <AppProvider>
+            <InitialLayout/>
+          </AppProvider>
         </SafeAreaView>
       </SafeAreaProvider>
      </ClerkAndConvexProvider>

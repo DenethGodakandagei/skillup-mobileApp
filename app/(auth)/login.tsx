@@ -30,8 +30,8 @@ export default function Login() {
                 <Ionicons name='bag' size={32} color={COLORS.black}/>
 
             </View>
-            <Text style={styles.appName}>Job Genie</Text>
-            <Text style={styles.tagline}>A better place to find and begin earning.</Text>
+            <Text style={styles.appName}>Skill Up</Text>
+            <Text style={styles.tagline}>A better place to find and begin Learning.</Text>
         </View>
       <View style={styles.illustrationContainer}>
         <Image source={require("../../assets/images/job-search-man.png")}
