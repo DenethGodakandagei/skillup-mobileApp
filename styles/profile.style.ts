@@ -1,5 +1,7 @@
 import { COLORS } from "@/constants/theme";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
@@ -45,9 +47,6 @@ export const styles = StyleSheet.create({
     position: "relative",
   },
 
-// coverContainer: {
-//   position: "relative",
-// },
 coverImage: {
   width: "100%",
   height: "100%",
@@ -74,6 +73,22 @@ coverEditButton: {
     width: 86,
     height: 86,
     borderRadius: 43,
+  },
+   profileImageModalDetailContainer: {
+    backgroundColor: COLORS.background,
+    maxHeight: height * 0.9,
+  },
+  profileImageModalDetailHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: COLORS.surface,
+  },
+  profileImageModalDetailImage: {
+    width: width,
+    height: width,
   },
 
   /* Name + Bio */
@@ -180,7 +195,7 @@ coverEditButton: {
   },
   modalBackdrop: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    backgroundColor: "rgba(6, 11, 11, 0.8)",
     justifyContent: "center",
   },
   

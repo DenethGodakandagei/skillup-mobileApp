@@ -35,7 +35,7 @@ export default function Profile() {
     bio: currentUser?.bio || "",
     
   });
-
+  const [selectedProfileImage, setSelectedProfileImage] = useState<string | null>(null);
   const updateProfile = useMutation(api.users.updateProfile);
 
   if (currentUser === undefined) return <Loader />;
@@ -67,7 +67,7 @@ export default function Profile() {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Text style={styles.username}>
-            {currentUser?.fullname || currentUser?.username || "User"}
+            {currentUser?.username || "username"}
           </Text>
         </View>
         <View style={styles.headerRight}>
@@ -81,6 +81,7 @@ export default function Profile() {
         <View style={styles.profileInfo}>
           {/* COVER IMAGE */}
           <View style={styles.coverContainer}>
+            <TouchableOpacity onPress={() => setSelectedProfileImage(currentUser?.coverImage || null)}>
             {currentUser?.coverImage ? (
               <Image
                 source={{ uri: currentUser.coverImage }}
@@ -89,6 +90,7 @@ export default function Profile() {
             ) : (
               <View style={[styles.coverImage, { backgroundColor: COLORS.lightGrey }]} />
             )}
+            </TouchableOpacity>
 
             {/* Cover Image Edit Button */}
             <TouchableOpacity
@@ -100,6 +102,7 @@ export default function Profile() {
 
             {/* AVATAR */}
             <View style={styles.avatarContainer}>
+              <TouchableOpacity onPress={() => setSelectedProfileImage(currentUser?.profileImage || null)}>
               {currentUser?.profileImage ? (
                 <Image
                   source={{ uri: currentUser.profileImage }}
@@ -108,6 +111,7 @@ export default function Profile() {
               ) : (
                 <View style={[styles.avatar, { backgroundColor: COLORS.red }]} />
               )}
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -115,9 +119,8 @@ export default function Profile() {
           <Text style={styles.name}>
             {currentUser?.fullname}
           </Text>
-          {currentUser?.bio && (
-            <Text style={styles.bio}>{currentUser.bio}</Text>
-          )}
+            <Text style={styles.bio}>{currentUser?.bio || "Add a Bio."}</Text>
+          
 
           {/* ACTION BUTTONS */}
           <View style={styles.actionButtons}>
@@ -126,6 +129,12 @@ export default function Profile() {
               onPress={() => setIsEditModalVisible(true)}
             >
               <Text style={styles.editButtonText}>Edit Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.editButton}
+              // onPress={() => setIsEditModalVisible(true)}
+            >
+              <Text style={styles.editButtonText}>Share Profile</Text>
             </TouchableOpacity>
           </View>
 
@@ -139,6 +148,32 @@ export default function Profile() {
           </View>
         </View>
       </ScrollView>
+
+      {/* PROFILE IMAGE PREVIEW MODAL */}
+      <Modal
+        visible={!!selectedProfileImage}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setSelectedProfileImage(null)}
+      >
+        <View style={styles.modalBackdrop}>
+          {selectedProfileImage && (
+            <View style={styles.profileImageModalDetailContainer}>
+              <View style={styles.profileImageModalDetailHeader}>
+                <TouchableOpacity onPress={() => setSelectedProfileImage(null)}>
+                  <Ionicons name="close" size={24} color={COLORS.white} />
+                </TouchableOpacity>
+              </View>
+
+              <Image
+                source={{ uri: selectedProfileImage }}
+                style={styles.profileImageModalDetailImage}
+                resizeMode="contain"
+              />
+            </View>
+          )}
+        </View>
+      </Modal>
 
       {/* EDIT PROFILE MODAL */}
       <Modal
