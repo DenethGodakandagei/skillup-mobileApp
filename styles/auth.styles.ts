@@ -1,4 +1,3 @@
-// styles/auth.styles.ts
 import { COLORS } from "@/constants/theme";
 import { Dimensions, StyleSheet } from "react-native";
 
@@ -8,6 +7,8 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+    alignItems: "center",
+    justifyContent: "center"
   },
   brandSection: {
     alignItems: "center",
@@ -31,9 +32,10 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   tagline: {
-    fontSize: 16,
+    fontSize: 15,
     color: COLORS.darkGrey,
     letterSpacing: 1,
+    textAlign: "center",
     textTransform: "lowercase",
   },
   illustrationContainer: {
