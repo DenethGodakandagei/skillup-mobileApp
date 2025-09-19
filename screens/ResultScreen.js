@@ -11,6 +11,7 @@ import {
 import JobRoleCard from '../components/JobRoleCard';
 import { useApp } from '../context/AppContext';
 
+
 const ResultsScreen = () => {
   const router = useRouter();
   const { state, dispatch } = useApp();
