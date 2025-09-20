@@ -82,7 +82,7 @@ export default function Profile() {
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerIcon}>
-            <Ionicons name="share-outline" size={24} color={COLORS.black} />
+            <Ionicons name="share-outline" size={24} color={COLORS.primary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -140,17 +140,18 @@ export default function Profile() {
             >
               <Text style={styles.editButtonText}>Edit Profile</Text>
             </TouchableOpacity>
+            
             <TouchableOpacity
-              style={styles.editButton}
+              style={styles.shareButton}
               // onPress={() => setIsEditModalVisible(true)}
             >
-              <Text style={styles.editButtonText}>Share Profile</Text>
+              <Text style={styles.shareButtonText}>Share Profile</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.actionButtons}>
             <TouchableOpacity
-              style={styles.editButton}
+              style={styles.signoutButton}
               onPress={() => signOut()}
             >
               <Text style={styles.signoutButtonText}>Sign Out</Text>
@@ -162,7 +163,7 @@ export default function Profile() {
       {/* PROFILE IMAGE PREVIEW MODAL */}
       <Modal
         visible={!!selectedProfileImage}
-        animationType="fade"
+        animationType="slide"
         transparent={true}
         onRequestClose={() => setSelectedProfileImage(null)}
       >

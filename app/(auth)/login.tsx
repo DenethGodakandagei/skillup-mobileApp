@@ -47,7 +47,7 @@ export default function Login() {
           activeOpacity={0.9}
         >
           <View style={styles.googleIconContainer}>
-            <Ionicons name="logo-google" size={20} color={COLORS.black} />
+            <Ionicons name="logo-google" size={20} color={COLORS.white} />
           </View>
           <Text style={styles.googleButtonText}>Continue with Google</Text>
         </TouchableOpacity>
