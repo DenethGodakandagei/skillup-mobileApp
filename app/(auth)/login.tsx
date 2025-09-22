@@ -29,9 +29,12 @@ export default function Login() {
             {/* <View style={styles.logoContainer}>
                 <Ionicons name='search' size={32} color={COLORS.black}/>
 
+
+          
             </View> */}
             <Text style={styles.appName}>Skill Up</Text>
             <Text style={styles.tagline}>Learn, grow, find and master new skills anytime, anywhere..</Text>
+
         </View>
       <View style={styles.illustrationContainer}>
         <Image source={require("../../assets/images/job-search-man.png")}
