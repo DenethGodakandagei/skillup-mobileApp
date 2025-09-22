@@ -6,7 +6,7 @@ const { width, height } = Dimensions.get("window");
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.surface,
   },
   header: {
     flexDirection: "row",
@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: COLORS.surface,
+    
   },
   headerLeft: {
     flexDirection: "row",
@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
   },
   headerIcon: {
     padding: 4,
-    color: "black",
+    color: COLORS.black,
   },
 
   profileInfo: {
@@ -75,7 +75,7 @@ coverEditButton: {
     borderRadius: 43,
   },
    profileImageModalDetailContainer: {
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.black,
     maxHeight: height * 0.9,
   },
   profileImageModalDetailHeader: {
@@ -83,8 +83,6 @@ coverEditButton: {
     alignItems: "center",
     justifyContent: "flex-end",
     padding: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: COLORS.surface,
   },
   profileImageModalDetailImage: {
     width: width,
@@ -101,7 +99,7 @@ coverEditButton: {
   },
   bio: {
     fontSize: 14,
-    color: COLORS.darkGrey,
+    color: COLORS.lightFont,
     lineHeight: 20,
     marginHorizontal: 16,
     marginTop: 4,
@@ -116,29 +114,41 @@ coverEditButton: {
   },
   editButton: {
     flex: 1,
-    backgroundColor: COLORS.surface,
+    backgroundColor: COLORS.primary,
     padding: 10,
     borderRadius: 8,
     alignItems: "center",
   },
   editButtonText: {
-    color: COLORS.black,
+    color: COLORS.white,
     fontWeight: "600",
     fontSize: 14,
+  },
+  shareButton: {
+    flex: 1,
+    backgroundColor: COLORS.lighPurple,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  shareButtonText: {
+    color: COLORS.primary,
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  signoutButton: {
+    flex: 1,
+    backgroundColor: COLORS.lighPurple,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
   },
   signoutButtonText: {
     color: COLORS.red,
     fontWeight: "600",
     fontSize: 14,
   },
-  shareButton: {
-    backgroundColor: COLORS.surface,
-    padding: 10,
-    borderRadius: 8,
-    aspectRatio: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
     modalContainer: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
@@ -158,7 +168,7 @@ coverEditButton: {
     marginBottom: 20,
   },
   modalTitle: {
-    color: COLORS.black,
+    color: COLORS.primary,
     fontSize: 18,
     fontWeight: "600",
   },
@@ -166,12 +176,12 @@ coverEditButton: {
     marginBottom: 20,
   },
   inputLabel: {
-    color: COLORS.black,
+    color: COLORS.lightFont,
     marginBottom: 8,
     fontSize: 14,
   },
   input: {
-    backgroundColor: COLORS.grey,
+    backgroundColor: COLORS.surface,
     borderRadius: 8,
     padding: 12,
     color: COLORS.black,
@@ -182,14 +192,14 @@ coverEditButton: {
     textAlignVertical: "top",
   },
   saveButton: {
-    backgroundColor: COLORS.grey,
+    backgroundColor: COLORS.primary,
     padding: 16,
     borderRadius: 8,
     alignItems: "center",
     marginTop: 20,
   },
   saveButtonText: {
-    color: COLORS.black,
+    color: COLORS.white,
     fontSize: 16,
     fontWeight: "600",
   },

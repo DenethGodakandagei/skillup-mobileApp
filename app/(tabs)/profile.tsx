@@ -5,7 +5,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Image,
   Keyboard,
@@ -31,10 +31,20 @@ export default function Profile() {
   );
 
   const [editedProfile, setEditedProfile] = useState({
-    fullname: currentUser?.fullname || "",
-    bio: currentUser?.bio || "",
-    
+    fullname: "",
+    bio: "",
   });
+
+  useEffect(() => {
+    if (currentUser) {
+      setEditedProfile({
+        fullname: currentUser.fullname || "",
+        bio: currentUser.bio || "",
+      });
+    }
+  }, [currentUser]);
+
+
   const [selectedProfileImage, setSelectedProfileImage] = useState<string | null>(null);
   const updateProfile = useMutation(api.users.updateProfile);
 
@@ -72,7 +82,7 @@ export default function Profile() {
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerIcon}>
-            <Ionicons name="share-outline" size={24} color={COLORS.black} />
+            <Ionicons name="share-outline" size={24} color={COLORS.primary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -130,17 +140,18 @@ export default function Profile() {
             >
               <Text style={styles.editButtonText}>Edit Profile</Text>
             </TouchableOpacity>
+            
             <TouchableOpacity
-              style={styles.editButton}
+              style={styles.shareButton}
               // onPress={() => setIsEditModalVisible(true)}
             >
-              <Text style={styles.editButtonText}>Share Profile</Text>
+              <Text style={styles.shareButtonText}>Share Profile</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.actionButtons}>
             <TouchableOpacity
-              style={styles.editButton}
+              style={styles.signoutButton}
               onPress={() => signOut()}
             >
               <Text style={styles.signoutButtonText}>Sign Out</Text>
@@ -152,7 +163,7 @@ export default function Profile() {
       {/* PROFILE IMAGE PREVIEW MODAL */}
       <Modal
         visible={!!selectedProfileImage}
-        animationType="fade"
+        animationType="slide"
         transparent={true}
         onRequestClose={() => setSelectedProfileImage(null)}
       >
@@ -201,7 +212,7 @@ export default function Profile() {
                 <Text style={styles.inputLabel}>Name</Text>
                 <TextInput
                   style={styles.input}
-                  value={editedProfile.fullname || currentUser?.fullname}
+                  value={editedProfile.fullname}
                   onChangeText={(text) =>
                     setEditedProfile((prev) => ({ ...prev, fullname: text }))
                   }
@@ -213,7 +224,7 @@ export default function Profile() {
                 <Text style={styles.inputLabel}>Bio</Text>
                 <TextInput
                   style={[styles.input, styles.bioInput]}
-                  value={editedProfile.bio || currentUser?.bio}
+                  value={editedProfile.bio}
                   onChangeText={(text) =>
                     setEditedProfile((prev) => ({ ...prev, bio: text }))
                   }
