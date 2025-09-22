@@ -3,6 +3,7 @@ import { api } from "@/convex/_generated/api";
 import { useAuth } from "@clerk/clerk-expo";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
+import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "../../styles/MyLearn.style";
@@ -15,6 +16,9 @@ export default function MyLearn() {
     api.users.getUserByClerkId,
     userId ? { clerkId: userId } : "skip"
   );
+  const courses = useQuery(api.courses.getCourses);
+  const router = useRouter();
+
 
   useEffect(() => {
     if (currentUser) {
@@ -58,56 +62,39 @@ export default function MyLearn() {
         </View>
 
         {/* My Learn Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>My Learn</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeAll}>See All</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Course Items */}
-          <View style={styles.courseCard}>
-            <View style={[styles.iconWrapper, { backgroundColor: "#fee2e2" }]}>
-              <MaterialIcons name="code" size={24} color="#ef4444" />
-            </View>
-            <View style={styles.courseInfo}>
-              <Text style={styles.courseTitle}>Web Development</Text>
-              <Text style={styles.courseLevel}>10 Levels</Text>
-            </View>
-            <TouchableOpacity style={styles.enrollButton}>
-              <Text style={styles.enrollText}>Enroll</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.courseCard}>
-            <View style={[styles.iconWrapper, { backgroundColor: "#dbeafe" }]}>
-              <MaterialIcons name="data-object" size={24} color="#3b82f6" />
-            </View>
-            <View style={styles.courseInfo}>
-              <Text style={styles.courseTitle}>Python for Beginners</Text>
-              <Text style={styles.courseLevel}>10 Levels</Text>
-            </View>
-            <TouchableOpacity style={styles.enrollButton}>
-              <Text style={styles.enrollText}>Enroll</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.courseCard}>
-            <View style={[styles.iconWrapper, { backgroundColor: "#dcfce7" }]}>
-              <MaterialIcons name="phone-iphone" size={24} color="#22c55e" />
-            </View>
-            <View style={styles.courseInfo}>
-              <Text style={styles.courseTitle}>
-                React Native for Beginners
-              </Text>
-              <Text style={styles.courseLevel}>10 Levels</Text>
-            </View>
-            <TouchableOpacity style={styles.enrollButton}>
-              <Text style={styles.enrollText}>Enroll</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>My Learn</Text>
+          <TouchableOpacity>
+            <Text style={styles.seeAll}>See All</Text>
+          </TouchableOpacity>
         </View>
+
+        {courses?.map((course) => (
+          <View key={course._id} style={styles.courseCard}>
+            <View style={[styles.iconWrapper, { backgroundColor: "#dbeafe" }]}>
+              <MaterialIcons name="school" size={24} color="#3b82f6" />
+            </View>
+            <View style={styles.courseInfo}>
+              <Text style={styles.courseTitle}>{course.title}</Text>
+              <Text style={styles.courseLevel}>
+                {course.levels.length} Levels
+              </Text>
+            </View>
+            <TouchableOpacity 
+              style={styles.enrollButton} 
+              onPress={() => {
+                router.push({
+                  pathname: "/screens/course-details",
+                  params: { course: JSON.stringify(course) }
+                });
+              }}
+            >
+              <Text style={styles.enrollText}>Enroll</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
       </ScrollView>
 
       

@@ -8,7 +8,7 @@ export function Loader() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.surface,
       }}
     >
       <ActivityIndicator size="large" color={COLORS.primary} />
