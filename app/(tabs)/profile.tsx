@@ -98,7 +98,7 @@ export default function Profile() {
                 style={styles.coverImage}
               />
             ) : (
-              <View style={[styles.coverImage, { backgroundColor: COLORS.lightGrey }]} />
+              <View style={[styles.coverImage, { backgroundColor: COLORS.primary }]} />
             )}
             </TouchableOpacity>
 
