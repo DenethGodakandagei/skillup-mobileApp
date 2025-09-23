@@ -25,15 +25,22 @@ export default function TabLayout() {
                 tabBarIcon: ({color, size}) => <Ionicons name = "home" size={size} color={color}/>,
             }}
         />
-        <Tabs.Screen name="findSkill"
+        
+        <Tabs.Screen name="isUpload"
          options={{
-                tabBarIcon: ({color, size}) => <Ionicons name = "bulb" size={size} color={color}/>,
+                tabBarIcon: ({color, size}) => <Ionicons name = "cloud-upload" size={size} color={color}/>,
             }}
         />
         
         <Tabs.Screen name="myLearn"
          options={{
                 tabBarIcon: ({color, size}) => <Ionicons name = "book" size={size} color={color}/>,
+            }}
+        />
+        
+        <Tabs.Screen name="jobs"
+         options={{
+                tabBarIcon: ({color, size}) => <Ionicons name = "briefcase" size={size} color={color}/>,
             }}
         />
         <Tabs.Screen name="profile"
