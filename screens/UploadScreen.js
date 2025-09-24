@@ -38,9 +38,10 @@ const UploadScreen = () => {
         quality: 1,
       });
 
-      if (!result.canceled) {
-        await processCV(result.assets[0].uri, 'image');
-      }
+      if (!result.canceled && result.assets?.length > 0) {
+  await processCV(result.assets[0].uri, 'image');
+}
+
     } catch (error) {
       showError('Failed to pick image: ' + error.message);
     }
@@ -61,9 +62,10 @@ const UploadScreen = () => {
         quality: 1,
       });
 
-      if (!result.canceled) {
-        await processCV(result.assets[0].uri, 'image');
-      }
+      if (!result.canceled && result.assets?.length > 0) {
+  await processCV(result.assets[0].uri, 'image');
+}
+
     } catch (error) {
       showError('Failed to take photo: ' + error.message);
     }
