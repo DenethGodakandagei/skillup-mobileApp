@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -84,6 +84,7 @@ export default function App() {
         </TouchableOpacity>
       </View>
 
+
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Ionicons
@@ -166,11 +167,15 @@ export default function App() {
         />
       )}
     </SafeAreaView>
+
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f9fafb" },
+  container: {
+    flex: 1,
+    backgroundColor: "#f9fafb",
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -233,4 +238,5 @@ const styles = StyleSheet.create({
   companyName: { color: "#9333ea", fontSize: 12, fontWeight: "500" },
   jobTitle: { fontSize: 16, fontWeight: "bold" },
   jobInfo: { color: "#6b7280", fontSize: 12 },
+
 });
