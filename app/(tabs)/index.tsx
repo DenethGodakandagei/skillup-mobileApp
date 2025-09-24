@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,91 +7,91 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-// Mock job data
-const featuredJobs = [
-  {
-    id: 1,
-    company: "Tech Solutions Inc.",
-    logo: "TS",
-    color: "#5b21b6",
-    position: "Software Engineer",
-    location: "San Francisco, CA",
-    salary: "$120k - $150k",
-    saved: false,
-  },
-  {
-    id: 2,
-    company: "Creative Minds Agency",
-    logo: "CM",
-    color: "#9333ea",
-    position: "Graphic Designer",
-    location: "Los Angeles, CA",
-    salary: "$60k - $80k",
-    saved: false,
-  },
-  {
-    id: 3,
-    company: "Global Finance Corp",
-    logo: "GF",
-    color: "#f3f4f6",
-    position: "Financial Analyst",
-    location: "New York, NY",
-    salary: "$80k - $100k",
-    saved: false,
-  },
-   {
-    id: 4,
-    company: "NextGen AI Labs",
-    logo: "AI",
-    color: "#2563eb",
-    position: "Machine Learning Engineer",
-    location: "Boston, MA",
-    salary: "$130k - $160k",
-    saved: false,
-  },
-  {
-    id: 5,
-    company: "HealthTech Innovations",
-    logo: "HI",
-    color: "#10b981",
-    position: "Mobile App Developer",
-    location: "Seattle, WA",
-    salary: "$100k - $130k",
-    saved: false,
-  },
-  {
-    id: 6,
-    company: "CyberSecure Ltd.",
-    logo: "CS",
-    color: "#dc2626",
-    position: "Cybersecurity Specialist",
-    location: "Austin, TX",
-    salary: "$110k - $140k",
-    saved: false,
-  },
-];
+// Job type definition
+type Job = {
+  id: string;
+  company: string;
+  logo: string;
+  color: string;
+  position: string;
+  location: string;
+  salary: string;
+  saved: boolean;
+};
 
-// Filter options
 const filters = ["Full-time", "Part-time", "Remote", "Contract"];
 
+// Replace with your Adzuna API credentials
+const APP_ID = "5a6a43cc";
+const APP_KEY = "a6bb03da140ec04dbc89ad4a7d0c82a5";
+
 export default function App() {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedFilter, setSelectedFilter] = useState<string>(filters[0]);
+
+  const fetchJobs = async () => {
+    try {
+      const response = await fetch(
+        `https://api.adzuna.com/v1/api/jobs/us/search/1?app_id=${APP_ID}&app_key=${APP_KEY}&results_per_page=20&what=software+developer`
+      );
+      const data = await response.json();
+
+      if (!data.results) {
+        setJobs([]);
+        return;
+      }
+
+      const formattedJobs: Job[] = data.results.map((job: any, index: number) => ({
+        id: job.id ? job.id : `job-${index}`,
+        company: job.company?.display_name || "Unknown Company",
+        logo: job.company?.display_name
+          ? job.company.display_name.substring(0, 2).toUpperCase()
+          : "NA",
+        color: "#9333ea",
+        position: job.title || "No Title",
+        location: job.location?.display_name || "Location not provided",
+        salary: job.salary_min
+          ? `$${job.salary_min} - $${job.salary_max || job.salary_min}`
+          : "Salary not disclosed",
+        saved: false,
+      }));
+
+      setJobs(formattedJobs);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      setJobs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-     <View style={styles.header}>
+      <View style={styles.header}>
         <Text style={styles.headerTitle}>Job Search</Text>
         <TouchableOpacity>
           <Ionicons name="notifications-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
 
-
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <Ionicons name="search-outline" size={20} color="#9333ea" style={{ marginRight: 8 }} />
+        <Ionicons
+          name="search-outline"
+          size={20}
+          color="#9333ea"
+          style={{ marginRight: 8 }}
+        />
         <TextInput
           placeholder="Search for jobs or companies"
           placeholderTextColor="#6b7280"
@@ -99,25 +99,25 @@ export default function App() {
         />
       </View>
 
-
       {/* Filter Chips */}
       <FlatList
         data={filters}
         horizontal
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item}
         contentContainerStyle={styles.filterContainer}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <TouchableOpacity
             style={[
               styles.filterChip,
-              index === 0 && styles.filterChipActive,
+              selectedFilter === item && styles.filterChipActive,
             ]}
+            onPress={() => setSelectedFilter(item)}
           >
             <Text
               style={[
                 styles.filterText,
-                index === 0 && styles.filterTextActive,
+                selectedFilter === item && styles.filterTextActive,
               ]}
             >
               {item}
@@ -126,51 +126,51 @@ export default function App() {
         )}
       />
 
+      {/* Spacer */}
+      <View style={{ height: 20 }} />
+
       {/* Featured Jobs */}
       <Text style={styles.sectionTitle}>Featured Jobs</Text>
-      <FlatList
-        data={featuredJobs}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        renderItem={({ item }) => (
-          <View style={styles.jobCard}>
-            {/* Company Logo */}
-            <View style={[styles.logo, { backgroundColor: item.color }]}>
-              <Text
-                style={[
-                  styles.logoText,
-                  item.color === "#f3f4f6" && { color: "#9333ea" },
-                ]}
-              >
-                {item.logo}
-              </Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#9333ea" style={{ flex: 1 }} />
+      ) : jobs.length === 0 ? (
+        <Text style={{ textAlign: "center", marginTop: 20 }}>
+          No jobs found.
+        </Text>
+      ) : (
+        <FlatList
+          data={jobs}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          renderItem={({ item }) => (
+            <View style={styles.jobCard}>
+              {/* Company Logo */}
+              <View style={[styles.logo, { backgroundColor: item.color }]}>
+                <Text style={styles.logoText}>{item.logo}</Text>
+              </View>
+
+              {/* Job Details */}
+              <View style={{ flex: 1 }}>
+                <Text style={styles.companyName}>{item.company}</Text>
+                <Text style={styles.jobTitle}>{item.position}</Text>
+                <Text style={styles.jobInfo}>{item.location}</Text>
+                <Text style={styles.jobInfo}>{item.salary}</Text>
+              </View>
+
+              {/* Bookmark */}
+              <TouchableOpacity>
+                <Ionicons name="bookmark-outline" size={20} color="#9ca3af" />
+              </TouchableOpacity>
             </View>
-
-            {/* Job Details */}
-            <View style={{ flex: 1 }}>
-              <Text style={styles.companyName}>{item.company}</Text>
-              <Text style={styles.jobTitle}>{item.position}</Text>
-              <Text style={styles.jobInfo}>{item.location}</Text>
-              <Text style={styles.jobInfo}>{item.salary}</Text>
-            </View>
-
-            {/* Bookmark */}
-            <TouchableOpacity>
-             <Ionicons name="bookmark-outline" size={20} color="#9ca3af" />
-            </TouchableOpacity>
-
-          </View>
-        )}
-      />
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f9fafb",
-  },
+  container: { flex: 1, backgroundColor: "#f9fafb" },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -190,10 +190,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   searchInput: { flex: 1, fontSize: 14, color: "#111" },
-  filterContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
+  filterContainer: { paddingHorizontal: 20, marginBottom: 20 },
   filterChip: {
     backgroundColor: "#ede9fe",
     paddingHorizontal: 16,
@@ -209,6 +206,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginHorizontal: 20,
     marginBottom: 12,
+    marginTop: 10, // Added gap above section
   },
   jobCard: {
     flexDirection: "row",
