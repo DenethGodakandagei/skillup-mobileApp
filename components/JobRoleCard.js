@@ -1,15 +1,18 @@
-import { MaterialIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import React, { useRef } from "react";
 import {
-    Animated,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const JobRoleCard = ({ role, rank, onPress }) => {
-  const scaleAnim = new Animated.Value(1);
+  const router = useRouter();
+  const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -26,31 +29,50 @@ const JobRoleCard = ({ role, rank, onPress }) => {
   };
 
   const getMatchColor = (percentage) => {
-    if (percentage >= 80) return ['#10b981', '#06d6a0'];
-    if (percentage >= 60) return ['#f59e0b', '#f97316'];
-    return ['#ef4444', '#dc2626'];
+    if (percentage >= 80) return ["#10b981", "#06d6a0"];
+    if (percentage >= 60) return ["#f59e0b", "#f97316"];
+    return ["#ef4444", "#dc2626"];
   };
 
   const getGrowthIcon = (potential) => {
     switch (potential?.toLowerCase()) {
-      case 'high': return 'trending-up';
-      case 'medium': return 'trending-flat';
-      case 'low': return 'trending-down';
-      default: return 'help-outline';
+      case "high":
+        return "trending-up";
+      case "medium":
+        return "trending-flat";
+      case "low":
+        return "trending-down";
+      default:
+        return "help-outline";
     }
   };
 
   const getGrowthColor = (potential) => {
     switch (potential?.toLowerCase()) {
-      case 'high': return '#10b981';
-      case 'medium': return '#f59e0b';
-      case 'low': return '#ef4444';
-      default: return '#6b7280';
+      case "high":
+        return "#10b981";
+      case "medium":
+        return "#f59e0b";
+      case "low":
+        return "#ef4444";
+      default:
+        return "#6b7280";
     }
   };
 
+  // new handler for View Details
+  const handleViewDetails = (title) => {
+    //console.log("Job Title:", title);
+    router.push({
+      pathname: "/map",
+      params: { title: role.title }, // passing role.title
+    });
+  };
+
   return (
-    <Animated.View style={[styles.container, { transform: [{ scale: scaleAnim }] }]}>
+    <Animated.View
+      style={[styles.container, { transform: [{ scale: scaleAnim }] }]}
+    >
       <TouchableOpacity
         style={styles.card}
         onPress={onPress}
@@ -62,7 +84,7 @@ const JobRoleCard = ({ role, rank, onPress }) => {
         <View style={styles.header}>
           <View style={styles.rankContainer}>
             <LinearGradient
-              colors={['#6366f1', '#8b5cf6']}
+              colors={["#6366f1", "#8b5cf6"]}
               style={styles.rankBadge}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
@@ -70,12 +92,12 @@ const JobRoleCard = ({ role, rank, onPress }) => {
               <Text style={styles.rankText}>#{rank}</Text>
             </LinearGradient>
           </View>
-          
+
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{role.title}</Text>
             <Text style={styles.industry}>
-              <MaterialIcons name="business" size={14} color="#6b7280" />
-              {' '}{role.industry || 'General'}
+              <MaterialIcons name="business" size={14} color="#6b7280" />{" "}
+              {role.industry || "General"}
             </Text>
           </View>
 
@@ -96,16 +118,23 @@ const JobRoleCard = ({ role, rank, onPress }) => {
         <View style={styles.infoRow}>
           <View style={styles.infoItem}>
             <MaterialIcons name="attach-money" size={18} color="#10b981" />
-            <Text style={styles.infoText}>{role.salary_range || 'Not specified'}</Text>
+            <Text style={styles.infoText}>
+              {role.salary_range || "Not specified"}
+            </Text>
           </View>
           <View style={styles.infoItem}>
-            <MaterialIcons 
-              name={getGrowthIcon(role.growth_potential)} 
-              size={18} 
+            <MaterialIcons
+              name={getGrowthIcon(role.growth_potential)}
+              size={18}
               color={getGrowthColor(role.growth_potential)}
             />
-            <Text style={[styles.infoText, { color: getGrowthColor(role.growth_potential) }]}>
-              {role.growth_potential || 'Medium'} Growth
+            <Text
+              style={[
+                styles.infoText,
+                { color: getGrowthColor(role.growth_potential) },
+              ]}
+            >
+              {role.growth_potential || "Medium"} Growth
             </Text>
           </View>
         </View>
@@ -114,8 +143,8 @@ const JobRoleCard = ({ role, rank, onPress }) => {
         {role.required_skills && role.required_skills.length > 0 && (
           <View style={styles.skillsSection}>
             <Text style={styles.skillsTitle}>
-              <MaterialIcons name="star" size={16} color="#f59e0b" />
-              {' '}Required Skills:
+              <MaterialIcons name="star" size={16} color="#f59e0b" /> Required
+              Skills:
             </Text>
             <View style={styles.skillsContainer}>
               {role.required_skills.slice(0, 6).map((skill, index) => (
@@ -125,7 +154,9 @@ const JobRoleCard = ({ role, rank, onPress }) => {
               ))}
               {role.required_skills.length > 6 && (
                 <View style={styles.skillChip}>
-                  <Text style={styles.skillText}>+{role.required_skills.length - 6}</Text>
+                  <Text style={styles.skillText}>
+                    +{role.required_skills.length - 6}
+                  </Text>
                 </View>
               )}
             </View>
@@ -138,7 +169,10 @@ const JobRoleCard = ({ role, rank, onPress }) => {
             <MaterialIcons name="psychology" size={16} color="#6366f1" />
             <Text style={styles.footerText}>AI Analyzed</Text>
           </View>
-          <TouchableOpacity style={styles.expandButton}>
+          <TouchableOpacity
+            style={styles.expandButton}
+            onPress={() => handleViewDetails(role.title)}
+          >
             <Text style={styles.expandText}>View Details</Text>
             <MaterialIcons name="arrow-forward" size={16} color="#6366f1" />
           </TouchableOpacity>
@@ -154,10 +188,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -166,11 +200,11 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 8,
     borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.05)',
+    borderColor: "rgba(0,0,0,0.05)",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     marginBottom: 15,
   },
   rankContainer: {
@@ -180,13 +214,13 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   rankText: {
-    color: 'white',
+    color: "white",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   titleContainer: {
     flex: 1,
@@ -194,113 +228,113 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1e293b',
+    fontWeight: "bold",
+    color: "#1e293b",
     marginBottom: 4,
     lineHeight: 24,
   },
   industry: {
     fontSize: 13,
-    color: '#6b7280',
-    flexDirection: 'row',
-    alignItems: 'center',
+    color: "#6b7280",
+    flexDirection: "row",
+    alignItems: "center",
   },
   matchBadge: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
     minWidth: 50,
-    alignItems: 'center',
+    alignItems: "center",
   },
   matchText: {
-    color: 'white',
+    color: "white",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   reasoning: {
     fontSize: 15,
-    color: '#374151',
+    color: "#374151",
     lineHeight: 22,
     marginBottom: 15,
   },
   infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 15,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    backgroundColor: '#f8fafc',
+    backgroundColor: "#f8fafc",
     borderRadius: 12,
   },
   infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   infoText: {
     fontSize: 14,
-    color: '#374151',
+    color: "#374151",
     marginLeft: 6,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   skillsSection: {
     marginBottom: 15,
   },
   skillsTitle: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   skillsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 6,
   },
   skillChip: {
-    backgroundColor: '#e0e7ff',
+    backgroundColor: "#e0e7ff",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: '#c7d2fe',
+    borderColor: "#c7d2fe",
   },
   skillText: {
     fontSize: 12,
-    color: '#3730a3',
-    fontWeight: '500',
+    color: "#3730a3",
+    fontWeight: "500",
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingTop: 15,
     borderTopWidth: 1,
-    borderTopColor: '#f1f5f9',
+    borderTopColor: "#f1f5f9",
   },
   footerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   footerText: {
     fontSize: 12,
-    color: '#6b7280',
+    color: "#6b7280",
     marginLeft: 4,
   },
   expandButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#f0f4ff',
+    backgroundColor: "#f0f4ff",
     borderRadius: 15,
   },
   expandText: {
     fontSize: 12,
-    color: '#6366f1',
-    fontWeight: '600',
+    color: "#6366f1",
+    fontWeight: "600",
     marginRight: 4,
   },
 });

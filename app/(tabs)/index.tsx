@@ -1,10 +1,15 @@
-import { Text, View } from "react-native";
-import { styles } from "../../styles/auth.styles";
+import { useRouter } from "expo-router";
+import { Button, StyleSheet, View } from "react-native";
 
 export default function Index() {
+  const router = useRouter();
   return (
     <View style={styles.container}>
-      <Text>Hello This is Home Screen</Text>
+      <Button title="Open Map" onPress={() => router.push("/map")} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+});
