@@ -85,7 +85,7 @@ export default function MyLearn() {
               style={styles.enrollButton} 
               onPress={() => {
                 router.push({
-                  pathname: "/screens/course-details",
+                  pathname: "/screens/CourseDetails",
                   params: { course: JSON.stringify(course) }
                 });
               }}
