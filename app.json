@@ -1,28 +1,20 @@
 {
   "expo": {
     "name": "Skill Up",
-    "slug": "Skill-Up",
+    "slug": "skill-up",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "samplereactnativeapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.harshasamarasingheexpo.SkillUp"
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "package": "com.harshasamarasingheexpo.skillup"
     },
     "plugins": [
       "expo-router",
@@ -39,14 +31,12 @@
       "expo-secure-store",
       "expo-web-browser"
     ],
-    "experiments": {
-      "typedRoutes": true
-    },
     "extra": {
-      "router": {},
       "eas": {
-        "projectId": "6e449002-1d31-484f-b444-381796eaa83b"
-      }
+        "projectId": "b733afed-c205-4c97-afd0-6db9b5062b95"
+      },
+      "router": {},
+      "EXPO_PUBLIC_CONVEX_URL": "https://impressive-cobra-514.convex.cloud"
     }
   }
 }
