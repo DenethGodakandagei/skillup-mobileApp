@@ -1,15 +1,15 @@
 // src/screens/ResultsScreen.js
-import { MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import {
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native';
-import JobRoleCard from '../components/JobRoleCard';
-import { useApp } from '../context/AppContext';
+  View,
+} from "react-native";
+import JobRoleCard from "../components/JobRoleCard";
+import { useApp } from "../context/AppContext";
 
 
 const ResultsScreen = () => {
@@ -18,8 +18,8 @@ const ResultsScreen = () => {
   const { jobSuggestions } = state;
 
   const handleNewAnalysis = () => {
-    dispatch({ type: 'RESET' });
-    router.push('/');
+    dispatch({ type: "RESET" });
+    router.push("/");
   };
 
   if (!jobSuggestions || !jobSuggestions.suggested_roles) {
@@ -27,7 +27,10 @@ const ResultsScreen = () => {
       <View style={styles.errorContainer}>
         <MaterialIcons name="error-outline" size={64} color="#ef4444" />
         <Text style={styles.errorText}>No analysis results available</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={handleNewAnalysis}>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={handleNewAnalysis}
+        >
           <Text style={styles.retryButtonText}>Try Again</Text>
         </TouchableOpacity>
       </View>
@@ -37,7 +40,10 @@ const ResultsScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
           <MaterialIcons name="arrow-back" size={24} color="#1e293b" />
         </TouchableOpacity>
         <Text style={styles.title}>Your Job Match Results</Text>
@@ -48,7 +54,7 @@ const ResultsScreen = () => {
       {jobSuggestions.analysis && (
         <View style={styles.analysisCard}>
           <Text style={styles.cardTitle}>CV Analysis Summary</Text>
-          
+
           <View style={styles.analysisRow}>
             <MaterialIcons name="work" size={20} color="#6366f1" />
             <Text style={styles.analysisLabel}>Experience:</Text>
@@ -99,7 +105,10 @@ const ResultsScreen = () => {
         <JobRoleCard key={index} role={role} rank={index + 1} />
       ))}
 
-      <TouchableOpacity style={styles.newAnalysisButton} onPress={handleNewAnalysis}>
+      <TouchableOpacity
+        style={styles.newAnalysisButton}
+        onPress={handleNewAnalysis}
+      >
         <MaterialIcons name="add-circle" size={24} color="white" />
         <Text style={styles.newAnalysisButtonText}>Analyze Another CV</Text>
       </TouchableOpacity>
@@ -116,16 +125,16 @@ const ResultsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: "#f8fafc",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: "#e2e8f0",
   },
   backButton: {
     padding: 6,
@@ -133,16 +142,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1e293b',
+    fontWeight: "bold",
+    color: "#1e293b",
     flex: 1,
   },
   analysisCard: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     margin: 15,
     padding: 20,
     borderRadius: 15,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -153,25 +162,25 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1e293b',
+    fontWeight: "bold",
+    color: "#1e293b",
     marginBottom: 15,
   },
   analysisRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   analysisLabel: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     marginLeft: 8,
     minWidth: 80,
   },
   analysisValue: {
     fontSize: 16,
-    color: '#6b7280',
+    color: "#6b7280",
     flex: 1,
   },
   skillsSection: {
@@ -179,16 +188,16 @@ const styles = StyleSheet.create({
   },
   skillsTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     marginBottom: 10,
   },
   skillsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   skillChip: {
-    backgroundColor: '#e0e7ff',
+    backgroundColor: "#e0e7ff",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
@@ -196,26 +205,26 @@ const styles = StyleSheet.create({
   },
   skillText: {
     fontSize: 14,
-    color: '#3730a3',
-    fontWeight: '500',
+    color: "#3730a3",
+    fontWeight: "500",
   },
   strengthsSection: {
     marginTop: 15,
   },
   strengthsTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     marginBottom: 10,
   },
   strengthItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 5,
   },
   strengthText: {
     fontSize: 14,
-    color: '#6b7280',
+    color: "#6b7280",
     marginLeft: 8,
   },
   suggestionsHeader: {
@@ -224,57 +233,57 @@ const styles = StyleSheet.create({
   },
   suggestionsTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1e293b',
+    fontWeight: "bold",
+    color: "#1e293b",
   },
   newAnalysisButton: {
-    backgroundColor: '#6366f1',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#6366f1",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     margin: 20,
     padding: 15,
     borderRadius: 12,
   },
   newAnalysisButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginLeft: 8,
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   errorText: {
     fontSize: 18,
-    color: '#6b7280',
+    color: "#6b7280",
     marginTop: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   retryButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: "#6366f1",
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 20,
   },
   retryButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   footer: {
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   footerText: {
     fontSize: 12,
-    color: '#9ca3af',
-    textAlign: 'center',
-  }
+    color: "#9ca3af",
+    textAlign: "center",
+  },
 });
 
 export default ResultsScreen;

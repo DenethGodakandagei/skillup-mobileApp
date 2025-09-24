@@ -1,3 +1,6 @@
+
+import { useRouter } from "expo-router";
+import { Button, StyleSheet, View } from "react-native";
 import React from "react";
 import {
   View,
@@ -87,8 +90,10 @@ export default function App() {
           <Ionicons name="notifications-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
-
+      {/*  <View style={styles.container}>
+      <Button title="Open Map" onPress={() => router.push("/map")} />
+    </View>
+*/}
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Ionicons name="search-outline" size={20} color="#9333ea" style={{ marginRight: 8 }} />
@@ -163,10 +168,14 @@ export default function App() {
         )}
       />
     </SafeAreaView>
+
   );
 }
 
 const styles = StyleSheet.create({
+
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+
   container: {
     flex: 1,
     backgroundColor: "#f9fafb",
@@ -235,4 +244,5 @@ const styles = StyleSheet.create({
   companyName: { color: "#9333ea", fontSize: 12, fontWeight: "500" },
   jobTitle: { fontSize: 16, fontWeight: "bold" },
   jobInfo: { color: "#6b7280", fontSize: 12 },
+
 });
