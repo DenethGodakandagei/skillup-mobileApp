@@ -2,61 +2,65 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  // Users table
   users: defineTable({
-    username: v.string(), //johndoe
-    fullname: v.string(), // John Doe
+    username: v.string(),            // johndoe
+    fullname: v.string(),            // John Doe
     email: v.string(),
     bio: v.optional(v.string()),
-    image: v.string(),
-    courses: v.number(),
+    profileImage: v.string(),
+    coverImage: v.optional(v.string()),
+    courses: v.optional(v.number()), // total courses created (optional, can calculate dynamically)
     clerkId: v.string(),
-  }).index("by_clerk_id", ["clerkId"]),
+  })
+    .index("by_clerk_id", ["clerkId"])
+    .index("by_email", ["email"])
+    .index("by_username", ["username"]),
 
+  // Courses table
   courses: defineTable({
+  title: v.string(),
+  description: v.string(),
+  imageUrl: v.string(),
+  levels: v.array(
+    v.object({
+      number: v.number(),
+      title: v.string(),
+      content: v.string(),
+      maxMarks: v.number(),
+    })
+  ),
+  createdAt: v.string(),
+  updatedAt: v.optional(v.string()),
+})
+  .searchIndex("search_title", { searchField: "title" }),
+
+
+  // Enrollments table
+  enrollments: defineTable({
+    courseId: v.id("courses"),
     userId: v.id("users"),
-    imageUrl: v.string(),
-    storageId: v.id("_storage"), // will be needed when we want to delete a post
-    title: v.string(),
-    levels: v.number(),
-    description: v.string(),
-  }).index("by_user", ["userId"]),
+    progress: v.number(),            // % progress (0–100)
+    completedLevels: v.array(v.number()), // Levels finished
+    marks: v.array(v.number()),      // Marks per level
+    isCompleted: v.boolean(),
+    certificateId: v.optional(v.id("certificates")), // Link to certificate if completed
+    enrolledAt: v.string(),          // ISO date
+    updatedAt: v.optional(v.string()),
+  })
+    .index("by_course", ["courseId"])
+    .index("by_user", ["userId"]),
 
-  likes: defineTable({
+  // Certificates table
+  certificates: defineTable({
+    courseId: v.id("courses"),
     userId: v.id("users"),
-    postId: v.id("posts"),
+    grade: v.string(),               // e.g. "A", "B", "C"
+    issuedAt: v.string(),            // ISO date
+    qrCodeUrl: v.string(),           // Stored QR code image
+    uniqueCode: v.string(),          // Unique ID to verify
   })
-    .index("by_post", ["postId"])
-    .index("by_user_and_post", ["userId", "postId"]),
-
-  comments: defineTable({
-    userId: v.id("users"),
-    postId: v.id("posts"),
-    content: v.string(),
-  }).index("by_post", ["postId"]),
-
-  follows: defineTable({
-    followerId: v.id("users"),
-    followingId: v.id("users"),
-  })
-    .index("by_follower", ["followerId"])
-    .index("by_following", ["followingId"])
-    .index("by_both", ["followerId", "followingId"]),
-
-  notifications: defineTable({
-    receiverId: v.id("users"),
-    senderId: v.id("users"),
-    type: v.union(v.literal("like"), v.literal("comment"), v.literal("follow")),
-    postId: v.optional(v.id("posts")),
-    commentId: v.optional(v.id("comments")),
-  })
-    .index("by_receiver", ["receiverId"])
-    .index("by_post", ["postId"]),
-
-  bookmarks: defineTable({
-    userId: v.id("users"),
-    postId: v.id("posts"),
-  })
+    .index("by_unique_code", ["uniqueCode"])
     .index("by_user", ["userId"])
-    .index("by_post", ["postId"])
-    .index("by_user_and_post", ["userId", "postId"]),
+    .index("by_course", ["courseId"]),
 });

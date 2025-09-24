@@ -1,4 +1,3 @@
-// styles/auth.styles.ts
 import { COLORS } from "@/constants/theme";
 import { Dimensions, StyleSheet } from "react-native";
 
@@ -7,7 +6,9 @@ const { width, height } = Dimensions.get("window");
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.surface,
+    alignItems: "center",
+    justifyContent: "center"
   },
   brandSection: {
     alignItems: "center",
@@ -31,9 +32,10 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   tagline: {
-    fontSize: 16,
-    color: COLORS.darkGrey,
+    fontSize: 15,
+    color: COLORS.lightFont,
     letterSpacing: 1,
+    textAlign: "center",
     textTransform: "lowercase",
   },
   illustrationContainer: {
@@ -57,7 +59,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.primary,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 14,
@@ -83,12 +85,12 @@ export const styles = StyleSheet.create({
   googleButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: COLORS.black,
+    color: COLORS.surface,
   },
   termsText: {
     textAlign: "center",
     fontSize: 12,
-    color: COLORS.darkGrey,
+    color: COLORS.lightFont,
     maxWidth: 280,
   },
 });

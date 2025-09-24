@@ -1,5 +1,6 @@
 // src/services/ocrService.js
-import * as FileSystem from 'expo-file-system';
+// Use legacy API for compatibility with current implementation on SDK 54+
+import * as FileSystem from 'expo-file-system/legacy';
 import { API_CONFIG } from './apiConfig';
 
 export class OCRService {
@@ -7,7 +8,8 @@ export class OCRService {
     try {
       // Convert image to base64
       const base64 = await FileSystem.readAsStringAsync(imageUri, {
-        encoding: FileSystem.EncodingType.Base64,
+        // Expo SDK 49+ uses string literal for encoding
+        encoding: 'base64',
       });
 
       // Prepare form data

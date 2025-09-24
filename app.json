@@ -1,25 +1,28 @@
 {
   "expo": {
-    "name": "Sample-React-Native-App",
-    "slug": "Sample-React-Native-App",
+    "name": "Skill Up",
+    "slug": "skill-up",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "samplereactnativeapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+
     "ios": {
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyAMlkdkmj9ItnonJ8KGWP0awQbTrO8d28M"
       }
     },
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
+
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAMlkdkmj9ItnonJ8KGWP0awQbTrO8d28M"
@@ -30,6 +33,8 @@
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
+      "package": "com.harshasamarasingheexpo.skillup"
+
     },
     "plugins": [
       "expo-router",
@@ -42,10 +47,19 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+
+      "expo-secure-store",
+      "expo-font",
+      "expo-secure-store",
+      "expo-web-browser"
+
     ],
-    "experiments": {
-      "typedRoutes": true
+    "extra": {
+      "eas": {
+        "projectId": "b733afed-c205-4c97-afd0-6db9b5062b95"
+      },
+      "router": {},
+      "EXPO_PUBLIC_CONVEX_URL": "https://impressive-cobra-514.convex.cloud"
     }
   }
 }
