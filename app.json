@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Skill Up",
-    "slug": "Skill Up",
+    "slug": "Skill-Up",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.harshasamarasingheexpo.SkillUp"
     },
     "web": {
       "bundler": "metro",
@@ -40,6 +41,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6e449002-1d31-484f-b444-381796eaa83b"
+      }
     }
   }
 }
