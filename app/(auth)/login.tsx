@@ -26,12 +26,15 @@ export default function Login() {
     <View style={styles.container}>
 
         <View style={styles.brandSection}>
-            <View style={styles.logoContainer}>
-                <Ionicons name='bag' size={32} color={COLORS.black}/>
+            {/* <View style={styles.logoContainer}>
+                <Ionicons name='search' size={32} color={COLORS.black}/>
 
-            </View>
+
+          
+            </View> */}
             <Text style={styles.appName}>Skill Up</Text>
-            <Text style={styles.tagline}>A better place to find and begin Learning.</Text>
+            <Text style={styles.tagline}>Learn, grow, find and master new skills anytime, anywhere..</Text>
+
         </View>
       <View style={styles.illustrationContainer}>
         <Image source={require("../../assets/images/job-search-man.png")}
@@ -47,7 +50,7 @@ export default function Login() {
           activeOpacity={0.9}
         >
           <View style={styles.googleIconContainer}>
-            <Ionicons name="logo-google" size={20} color={COLORS.black} />
+            <Ionicons name="logo-google" size={20} color={COLORS.white} />
           </View>
           <Text style={styles.googleButtonText}>Continue with Google</Text>
         </TouchableOpacity>
