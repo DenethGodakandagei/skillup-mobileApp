@@ -8,7 +8,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
-import { Bell, Bookmark, Search } from "lucide-react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 // Mock job data
 const featuredJobs = [
@@ -42,6 +42,36 @@ const featuredJobs = [
     salary: "$80k - $100k",
     saved: false,
   },
+   {
+    id: 4,
+    company: "NextGen AI Labs",
+    logo: "AI",
+    color: "#2563eb",
+    position: "Machine Learning Engineer",
+    location: "Boston, MA",
+    salary: "$130k - $160k",
+    saved: false,
+  },
+  {
+    id: 5,
+    company: "HealthTech Innovations",
+    logo: "HI",
+    color: "#10b981",
+    position: "Mobile App Developer",
+    location: "Seattle, WA",
+    salary: "$100k - $130k",
+    saved: false,
+  },
+  {
+    id: 6,
+    company: "CyberSecure Ltd.",
+    logo: "CS",
+    color: "#dc2626",
+    position: "Cybersecurity Specialist",
+    location: "Austin, TX",
+    salary: "$110k - $140k",
+    saved: false,
+  },
 ];
 
 // Filter options
@@ -51,22 +81,24 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+     <View style={styles.header}>
         <Text style={styles.headerTitle}>Job Search</Text>
         <TouchableOpacity>
-          <Bell size={24} stroke="black" />
+          <Ionicons name="notifications-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
 
+
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <Search size={20} stroke="#9333ea" style={{ marginRight: 8 }} />
+        <Ionicons name="search-outline" size={20} color="#9333ea" style={{ marginRight: 8 }} />
         <TextInput
           placeholder="Search for jobs or companies"
           placeholderTextColor="#6b7280"
           style={styles.searchInput}
         />
       </View>
+
 
       {/* Filter Chips */}
       <FlatList
@@ -124,8 +156,9 @@ export default function App() {
 
             {/* Bookmark */}
             <TouchableOpacity>
-              <Bookmark size={20} stroke="#9ca3af" />
+             <Ionicons name="bookmark-outline" size={20} color="#9ca3af" />
             </TouchableOpacity>
+
           </View>
         )}
       />
