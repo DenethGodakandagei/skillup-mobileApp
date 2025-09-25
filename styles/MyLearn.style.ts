@@ -103,9 +103,12 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
   },
   iconWrapper: {
-    padding: 12,
-    borderRadius: 12,
     marginRight: 12,
+  },
+  image: {
+    width: 60,
+    height: 60,
+    borderRadius: 5,
   },
   courseInfo: {
     flex: 1,
@@ -147,6 +150,16 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+  },
+   loaderContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.5)", // optional dim background
   },
 });
 

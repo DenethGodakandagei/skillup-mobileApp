@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: 8,
     borderRadius: 30,
-    backgroundColor: COLORS.lighPurple,
+    backgroundColor: COLORS.surface,
   },
   headerTitle: {
     fontSize: 18,
@@ -187,6 +187,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.lightFont,
     marginTop: 8,
+    textAlign: "center",
+    
+  },
+  subTitle: {
+    fontSize: 14,
+    color: COLORS.lightFont,
+    marginTop: 8,
+    marginLeft: 15,
+    textAlign: "left",
     
   },
   section: {
@@ -251,6 +260,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: COLORS.white,
+  },
+  loaderContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.5)", // optional dim background
   },
 });
 
