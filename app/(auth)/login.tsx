@@ -15,7 +15,7 @@ export default function Login() {
             const {createdSessionId, setActive} = await startSSOFlow({strategy: "oauth_google"})
 
             if(setActive && createdSessionId){
-                setActive({ session: createdSessionId});
+                await setActive({ session: createdSessionId }); // ensure session is ready
                 router.replace("/(tabs)");
             }
         } catch (error) {
@@ -26,12 +26,6 @@ export default function Login() {
     <View style={styles.container}>
 
         <View style={styles.brandSection}>
-            {/* <View style={styles.logoContainer}>
-                <Ionicons name='search' size={32} color={COLORS.black}/>
-
-
-          
-            </View> */}
             <Text style={styles.appName}>Skill Up</Text>
             <Text style={styles.tagline}>Learn, grow, find and master new skills anytime, anywhere..</Text>
 
@@ -55,9 +49,7 @@ export default function Login() {
           <Text style={styles.googleButtonText}>Continue with Google</Text>
         </TouchableOpacity>
 
-        <Text style={styles.termsText}>
-          By continuing, you agree to our Terms and Privacy Policy
-        </Text>
+        <Text style={styles.termsText}>By continuing, you agree to our Terms and Privacy Policy</Text>
       </View>
     </View>
   )

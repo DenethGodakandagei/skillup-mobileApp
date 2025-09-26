@@ -79,9 +79,12 @@ export default function MyLearn() {
             <Text style={styles.sectionTitle}>Available Courses</Text>
           </View>
 
+
+          <TouchableOpacity>
           {courses.map((course) => {
 
             return (
+              
               <View key={course._id} style={styles.courseCard}>
                 <View style={styles.iconWrapper}>
                   {loading && (
@@ -115,12 +118,15 @@ export default function MyLearn() {
                       params: { course: JSON.stringify(course) },
                     });
                   }}
+                  activeOpacity={0.8}
                 >
-                  <Text style={styles.enrollText}>Enroll</Text>
+                  <Text style={styles.enrollText}>View</Text>
                 </TouchableOpacity>
               </View>
+              
             );
           })}
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>

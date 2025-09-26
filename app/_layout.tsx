@@ -1,5 +1,4 @@
 import InitialLayout from "@/components/InitialLayout";
-
 import { COLORS } from "@/constants/theme";
 import { AppProvider } from "@/context/AppContext";
 import ClerkAndConvexProvider from "@/providers/ClerkAndConvexProvider";
@@ -18,11 +17,9 @@ export default function RootLayout() {
   return(
     <ClerkAndConvexProvider>
       <SafeAreaProvider>
-     
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
           <AppProvider>
-          <InitialLayout>
-          </InitialLayout>
+          <InitialLayout/>
           </AppProvider>
         </SafeAreaView>
       </SafeAreaProvider>

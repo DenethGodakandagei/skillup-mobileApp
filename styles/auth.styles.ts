@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   tagline: {
-    fontSize: 15,
+    fontSize: 14,
     color: COLORS.lightFont,
     letterSpacing: 1,
     textAlign: "center",

@@ -27,6 +27,7 @@ export default function CourseDetails () {
   const { course } = useLocalSearchParams();
   const courseData: CourseData = typeof course === 'string' ? JSON.parse(course) : course;
   const [loading, setLoading] = useState(true);
+  const [enrolled, setEnrolled] = useState(false);
 
   const showConfirm = () => {
     Alert.alert(
@@ -40,12 +41,30 @@ export default function CourseDetails () {
         },
         {
           text: "OK",
-          onPress: () => console.log("OK pressed"),
+          onPress: () => {
+            
+              setEnrolled(true);
+             // Navigate to enrolled course start screen
+              router.replace({
+                pathname: "/screens/EnrolledCourse",
+                params: { course: JSON.stringify(courseData) },
+              });
+          }
         },
       ],
       { cancelable: false }
     );
   };
+
+  const viewCourse = () => {
+    // ✅ Already enrolled → go straight to course
+              // router.push({
+              //   pathname: "/course/start",
+              //   params: { course: JSON.stringify(courseData) },
+              // });
+
+  }
+
 
   
 
@@ -109,9 +128,15 @@ export default function CourseDetails () {
 
       {/* Enroll Button */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.enrollButton} onPress={showConfirm}>
-          <Text style={styles.enrollText} >Enroll Now</Text>
-        </TouchableOpacity>
+        {enrolled ? (
+          <TouchableOpacity style={styles.enrollButton} onPress={viewCourse} activeOpacity={0.9}>
+            <Text style={styles.enrollText}>View Course</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.enrollButton} onPress={showConfirm} activeOpacity={0.9}>
+            <Text style={styles.enrollText}>Enroll Now</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
