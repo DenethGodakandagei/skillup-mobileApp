@@ -35,6 +35,26 @@ export default function MyLearn() {
     }
   }, [currentUser]);
 
+  // Function to handle card press for navigation
+  interface Course {
+    _id: string;
+    title: string;
+    image: string;
+    lessons?: unknown[]; // Replace unknown with a Lesson interface if available
+    [key: string]: any;
+  }
+
+  interface HandleCoursePress {
+    (course: Course): void;
+  }
+
+  const handleCoursePress: HandleCoursePress = (course) => {
+    router.push({
+      pathname: "/screens/CourseDetails",
+      params: { course: JSON.stringify(course) },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -79,13 +99,17 @@ export default function MyLearn() {
             <Text style={styles.sectionTitle}>Available Courses</Text>
           </View>
 
-
-          <TouchableOpacity>
+          {/* This outer TouchableOpacity was likely incorrect and has been removed, 
+              as we now wrap each individual course card. */}
           {courses.map((course) => {
-
             return (
-              
-              <View key={course._id} style={styles.courseCard}>
+              // The entire card (which was a View) is now a TouchableOpacity
+              <TouchableOpacity
+                key={course._id}
+                style={styles.courseCard}
+                onPress={() => handleCoursePress(course)} // Navigate on card press
+                activeOpacity={0.9}
+              >
                 <View style={styles.iconWrapper}>
                   {loading && (
                     <View style={styles.loaderContainer}>
@@ -94,7 +118,7 @@ export default function MyLearn() {
                   )}
                   <Image
                     source={{
-                      uri:course.image,
+                      uri: course.image,
                     }}
                     style={styles.image}
                     onLoadStart={() => setLoading(true)}
@@ -110,23 +134,10 @@ export default function MyLearn() {
                     {course.lessons?.length || 0} Lessons
                   </Text>
                 </View>
-                <TouchableOpacity
-                  style={styles.enrollButton}
-                  onPress={() => {
-                    router.push({
-                      pathname: "/screens/CourseDetails",
-                      params: { course: JSON.stringify(course) },
-                    });
-                  }}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.enrollText}>View</Text>
-                </TouchableOpacity>
-              </View>
-              
+                {/* The "View" button (enrollButton) has been removed from here */}
+              </TouchableOpacity>
             );
           })}
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
