@@ -1,48 +1,145 @@
 import { COLORS } from "@/constants/theme";
-import { MaterialIcons } from "@expo/vector-icons";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useAuth } from "@clerk/clerk-expo";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useMutation, useQuery } from "convex/react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React from "react";
-import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import styles from "../../styles/viewSingleCourseDetails.style";
 
-export default function CourseDetails () {
+interface SubLesson {
+  subTitle: string;
+}
 
+interface Lesson {
+  lessonTitle: string;
+  subLessons: SubLesson[];
+}
+
+interface CourseData {
+  _id: Id<"courses">;
+  title: string;
+  image: string;
+  description: string;
+  lessons: Lesson[];
+}
+
+export default function CourseDetails() {
   const router = useRouter();
   const { course } = useLocalSearchParams();
-  const courseData = typeof course === 'string' ? JSON.parse(course) : course;
+  const courseData: CourseData =
+    typeof course === "string" ? JSON.parse(course) : course;
+
+  const { userId: clerkId } = useAuth();
+
+  const [loading, setLoading] = useState(true);
+  const [enrolling, setEnrolling] = useState(false);
+  const [enrolled, setEnrolled] = useState(false);
+
+  // ✅ Get Convex user by Clerk ID
+  const convexUser = useQuery(
+    api.users.getUserByClerkId,
+    clerkId ? { clerkId } : "skip"
+  );
+
+  // ✅ Check enrollment status for this course
+  const enrollmentStatus = useQuery(
+    api.enrollments.checkEnrollmentStatus,
+    convexUser?._id && courseData?._id
+      ? { userId: convexUser._id, courseId: courseData._id }
+      : "skip"
+  );
+
+  // ✅ Mutation to enroll
+  const enrollUserToCourse = useMutation(api.enrollments.enrollUserToCourse);
+
+  // ✅ Update enrolled state when query returns
+  useEffect(() => {
+    if (enrollmentStatus?.enrolled) {
+      setEnrolled(true);
+    } else {
+      setEnrolled(false);
+    }
+  }, [enrollmentStatus]);
+
+  const handleEnroll = async () => {
+    if (!clerkId) {
+      Alert.alert("Please sign in to enroll.");
+      return;
+    }
+    if (!convexUser?._id) {
+      Alert.alert("User not found in database.");
+      return;
+    }
+
+    setEnrolling(true);
+    try {
+      const result = await enrollUserToCourse({
+        userId: convexUser._id,
+        courseId: courseData._id as any,
+      });
+
+      if (result.enrolled) {
+        setEnrolled(true);
+        router.replace({
+          pathname: "/screens/EnrolledCourse",
+          params: { course: JSON.stringify(courseData) },
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Enrollment failed.");
+    } finally {
+      setEnrolling(false);
+    }
+  };
 
   const showConfirm = () => {
     Alert.alert(
-      'Enroll "Course"?',                 // Title
-      "Are you sure you want to enroll ?", // Message
+      `Enroll "${courseData.title}"?`,
+      "Are you sure you want to enroll?",
       [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel pressed"),
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => console.log("OK pressed"),
-        },
+        { text: "Cancel", style: "cancel" },
+        { text: "OK", onPress: handleEnroll },
       ],
       { cancelable: false }
     );
+  };
+
+  const viewCourse = () => {
+    router.push({
+      pathname: "/screens/EnrolledCourse",
+      params: { course: JSON.stringify(courseData) },
+    });
   };
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
-          <MaterialIcons name="arrow-back-ios-new" size={20} color={COLORS.primary} />
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons name="chevron-back" size={24} color="#1D3D47" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{courseData.title}</Text>
         <TouchableOpacity style={styles.iconButton}>
-          <MaterialIcons name="favorite-border" size={22} color={COLORS.primary} />
+          <MaterialIcons name="favorite-border" size={22} color="#1D3D47" />
         </TouchableOpacity>
       </View>
 
+      {/* Scrollable Content */}
       <ScrollView
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
@@ -50,15 +147,16 @@ export default function CourseDetails () {
         {/* Course Info */}
         <View style={styles.card}>
           <View style={styles.courseInfo}>
-            {/* <View style={{ flex: 1 }}>
-              <Text style={styles.courseTitle}>Web Development</Text>
-              <Text style={styles.courseAuthor}>by John Doe</Text>
-            </View> */}
+            {loading && (
+              <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+              </View>
+            )}
             <Image
-              source={{
-                uri: courseData.imageUrl,
-              }}
+              source={{ uri: courseData.image }}
               style={styles.thumbnail}
+              onLoadStart={() => setLoading(true)}
+              onLoadEnd={() => setLoading(false)}
             />
           </View>
           <Text style={styles.courseDescription}>
@@ -66,69 +164,46 @@ export default function CourseDetails () {
           </Text>
         </View>
 
-        {/* Course Content */}
+        {/* Lessons */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>What you will learn</Text>
-
-          {/* Beginner */}
-          <Text style={styles.levelTitle}>Beginner Level</Text>
-          <View style={styles.lessonCard}>
-            <View style={styles.lessonIcon}>
-              <MaterialIcons name="play-arrow" size={22} color="#666" />
+          {courseData.lessons.map((lesson, i) => (
+            <View key={i}>
+              <Text style={styles.levelTitle}>{lesson.lessonTitle}</Text>
+              {lesson.subLessons.map((sub, j) => (
+                <Text key={j} style={styles.subTitle}>
+                  {sub.subTitle}
+                </Text>
+              ))}
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.lessonTitle}>Introduction to HTML</Text>
-              <Text style={styles.lessonSubtitle}>Your first web page</Text>
-            </View>
-            <Text style={styles.lessonDuration}>10:32</Text>
-          </View>
-
-          {/* Intermediate */}
-          <Text style={styles.levelTitle}>Intermediate Level</Text>
-          <View style={styles.lessonCard}>
-            <View style={styles.lessonIcon}>
-              <MaterialIcons name="play-arrow" size={22} color="#666" />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.lessonTitle}>Styling with CSS</Text>
-              <Text style={styles.lessonSubtitle}>Making it beautiful</Text>
-            </View>
-            <Text style={styles.lessonDuration}>15:10</Text>
-          </View>
-
-          <View style={styles.lessonCard}>
-            <View style={styles.lessonIcon}>
-              <MaterialIcons name="play-arrow" size={22} color="#666" />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.lessonTitle}>JavaScript Basics</Text>
-              <Text style={styles.lessonSubtitle}>Adding interactivity</Text>
-            </View>
-            <Text style={styles.lessonDuration}>20:45</Text>
-          </View>
-
-          {/* Advanced */}
-          <Text style={styles.levelTitle}>Advanced Level</Text>
-          <View style={[styles.lessonCard, { opacity: 0.5 }]}>
-            <View style={styles.lessonIcon}>
-              <MaterialIcons name="lock" size={20} color="#666" />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.lessonTitle}>Introduction to React</Text>
-              <Text style={styles.lessonSubtitle}>Building powerful UIs</Text>
-            </View>
-            <Text style={styles.lessonDuration}>25:00</Text>
-          </View>
+          ))}
         </View>
       </ScrollView>
 
-      {/* Enroll Button */}
+      {/* Footer Buttons */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.enrollButton} onPress={showConfirm}>
-          <Text style={styles.enrollText} >Enroll Now</Text>
-        </TouchableOpacity>
+        {enrolled ? (
+          <TouchableOpacity
+            style={styles.enrollButton}
+            onPress={viewCourse}
+            activeOpacity={0.9}
+          >
+            <Text style={styles.enrollText}>View Course</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.enrollButton}
+            onPress={showConfirm}
+            activeOpacity={0.9}
+            disabled={enrolling}
+          >
+            <Text style={styles.enrollText}>
+              {enrolling ? "Enrolling..." : "Enroll Now"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
-};
+}
 
