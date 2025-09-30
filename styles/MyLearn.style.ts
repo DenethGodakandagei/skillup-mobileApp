@@ -115,20 +115,27 @@ export const styles = StyleSheet.create({
     marginRight: 12,
   },
   image: {
-    width: 60,
-    height: 60,
-    borderRadius: 5,
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 12,
   },
   courseInfo: {
     flex: 1,
   },
+
   courseTitle: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "bold",
     color: COLORS.black,
   },
+  courseCategory: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: COLORS.primary,
+  },
   courseLevel: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.lightFont,
   },
   enrollButton: {
@@ -170,5 +177,31 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.5)", // optional dim background
   },
+  filterContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 10, // Adjust as needed
+  },
+  filterListContent: {
+    gap: 8, // Space between filter buttons
+  },
+  filterButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    backgroundColor: COLORS.lighPurple, // Example background color
+    borderWidth: 1,
+    borderColor: COLORS.white,
+  },
+  filterText: {
+    color: COLORS.primary,
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  noCoursesText: {
+    marginTop: 20,
+    textAlign: 'center',
+    color: COLORS.red,
+    fontSize: 16,
+  }
 });
 
