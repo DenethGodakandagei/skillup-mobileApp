@@ -210,36 +210,3 @@ export default function MyLearn() {
     </View>
   );
 }
-
-// 📌 NOTE: You will need to add the following styles to your 
-// "../../styles/MyLearn.style" file to support the new filtering feature.
-/* const filterStyles = StyleSheet.create({
-  filterContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 10, // Adjust as needed
-  },
-  filterListContent: {
-    gap: 8, // Space between filter buttons
-  },
-  filterButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-    backgroundColor: COLORS.lightGray, // Example background color
-    borderWidth: 1,
-    borderColor: COLORS.lightGray2,
-  },
-  filterText: {
-    color: COLORS.gray,
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  noCoursesText: {
-    marginTop: 20,
-    textAlign: 'center',
-    color: COLORS.gray,
-    fontSize: 16,
-  }
-});
-// Merge these into your main styles object: { ...filterStyles }
-*/
