@@ -4,9 +4,10 @@ import { useAuth } from "@clerk/clerk-expo";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react"; // ⬅️ IMPORT useMemo
 import {
   ActivityIndicator,
+  FlatList,
   Image,
   ScrollView,
   Text,
@@ -15,19 +16,59 @@ import {
 } from "react-native";
 import { styles } from "../../styles/MyLearn.style";
 
+// --- INTERFACES ---
+interface Course {
+  _id: string;
+  title: string;
+  image: string;
+  category: string; // ⬅️ Ensure category is present for filtering
+  lessons?: unknown[];
+  [key: string]: any;
+}
+
+interface HandleCoursePress {
+  (course: Course): void;
+}
+// --- END INTERFACES ---
+
 export default function MyLearn() {
   const { userId } = useAuth();
+  const router = useRouter();
 
+  // --- STATE ---
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("All"); // ⬅️ NEW STATE for filtering
+
+  // --- CONVEX QUERIES ---
   const currentUser = useQuery(
     api.users.getUserByClerkId,
     userId ? { clerkId: userId } : "skip"
   );
+  const courses = useQuery(api.courses.getCourses) as Course[] || []; // Cast courses to Course[]
 
-  // Courses query
-  const courses = useQuery(api.courses.getCourses) || []; // ✅ fallback to []
-  const [loading, setLoading] = useState(true);
+  // --- DERIVED DATA & FILTERING LOGIC ---
 
-  const router = useRouter();
+  // 1. Get unique categories for filters
+  const courseCategories = useMemo(() => {
+    // Extract unique categories, ensuring 'All' is the first option
+    const categories = new Set<string>();
+    courses.forEach(course => {
+      if (course.category) {
+        categories.add(course.category);
+      }
+    });
+    return ["All", ...Array.from(categories)];
+  }, [courses]);
+
+  // 2. Filter courses based on selected category
+  const filteredCourses = useMemo(() => {
+    if (selectedCategory === "All") {
+      return courses;
+    }
+    return courses.filter(course => course.category === selectedCategory);
+  }, [courses, selectedCategory]);
+
+  // --- HANDLERS & EFFECTS ---
 
   useEffect(() => {
     if (currentUser) {
@@ -35,25 +76,64 @@ export default function MyLearn() {
     }
   }, [currentUser]);
 
-  // Function to handle card press for navigation
-  interface Course {
-    _id: string;
-    title: string;
-    image: string;
-    lessons?: unknown[]; // Replace unknown with a Lesson interface if available
-    [key: string]: any;
-  }
-
-  interface HandleCoursePress {
-    (course: Course): void;
-  }
-
   const handleCoursePress: HandleCoursePress = (course) => {
     router.push({
       pathname: "/screens/CourseDetails",
       params: { course: JSON.stringify(course) },
     });
   };
+
+  const renderFilterItem = ({ item }: { item: string }) => (
+    <TouchableOpacity
+      style={[
+        styles.filterButton,
+        selectedCategory === item && { backgroundColor: COLORS.primary },
+      ]}
+      onPress={() => setSelectedCategory(item)}
+      activeOpacity={0.8}
+    >
+      <Text
+        style={[
+          styles.filterText,
+          selectedCategory === item && { color: COLORS.white },
+        ]}
+      >
+        {item}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const renderCourseCard = (course: Course) => (
+    <TouchableOpacity
+      key={course._id}
+      style={styles.courseCard}
+      onPress={() => handleCoursePress(course)}
+      activeOpacity={0.9}
+    >
+      <View style={styles.iconWrapper}>
+        {loading && (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+          </View>
+        )}
+        <Image
+          source={{ uri: course.image }}
+          style={styles.image}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+          onError={() => setLoading(false)}
+        />
+      </View>
+      <View style={styles.courseInfo}>
+        <Text style={styles.courseCategory}>{course.category}</Text>
+        <Text style={styles.courseTitle}>{course.title}</Text>
+        <Text style={styles.courseLevel}>{course.lessons?.length || 0} Main Lessons</Text>
+      </View>
+      <TouchableOpacity>
+        <MaterialIcons name="favorite-border" size={22} color="#1D3D47" />
+      </TouchableOpacity>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
@@ -93,51 +173,38 @@ export default function MyLearn() {
           </View>
         </View>
 
+        {/* ⬅️ NEW: COURSE CATEGORY FILTERS (FlatList) */}
+        <View style={styles.filterContainer}>
+          <FlatList
+            data={courseCategories}
+            renderItem={renderFilterItem}
+            keyExtractor={(item) => item}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterListContent}
+          />
+        </View>
+        {/* ⬅️ END FILTERS */}
+
+
         {/* My Learn Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Available Courses</Text>
+            {/* Display count of available courses */}
+            <Text style={styles.sectionTitle}>
+              Available Courses ({filteredCourses.length})
+            </Text>
           </View>
 
-          {/* This outer TouchableOpacity was likely incorrect and has been removed, 
-              as we now wrap each individual course card. */}
-          {courses.map((course) => {
-            return (
-              // The entire card (which was a View) is now a TouchableOpacity
-              <TouchableOpacity
-                key={course._id}
-                style={styles.courseCard}
-                onPress={() => handleCoursePress(course)} // Navigate on card press
-                activeOpacity={0.9}
-              >
-                <View style={styles.iconWrapper}>
-                  {loading && (
-                    <View style={styles.loaderContainer}>
-                      <ActivityIndicator size="small" color={COLORS.primary} />
-                    </View>
-                  )}
-                  <Image
-                    source={{
-                      uri: course.image,
-                    }}
-                    style={styles.image}
-                    onLoadStart={() => setLoading(true)}
-                    onLoadEnd={() => setLoading(false)}
-                    onError={() => {
-                      setLoading(false);
-                    }}
-                  />
-                </View>
-                <View style={styles.courseInfo}>
-                  <Text style={styles.courseTitle}>{course.title}</Text>
-                  <Text style={styles.courseLevel}>
-                    {course.lessons?.length || 0} Lessons
-                  </Text>
-                </View>
-                {/* The "View" button (enrollButton) has been removed from here */}
-              </TouchableOpacity>
-            );
-          })}
+          {/* ⬅️ Courses are now mapped from filteredCourses */}
+          {filteredCourses.length > 0 ? (
+            filteredCourses.map(renderCourseCard)
+          ) : (
+            <Text style={styles.noCoursesText}>
+              No courses found in the selected category.
+            </Text>
+          )}
+
         </View>
       </ScrollView>
     </View>

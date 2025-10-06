@@ -6,13 +6,13 @@ import { useConvex, useMutation } from "convex/react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-    Alert,
-    ImageBackground,
-    Linking,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View
+  Alert,
+  ImageBackground,
+  Linking,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
 import { styles } from "../../styles/lessons.styles";
 
