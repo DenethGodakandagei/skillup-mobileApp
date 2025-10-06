@@ -101,11 +101,23 @@ export const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
-  },
+    // --- SHADOW STYLES FOR iOS ---
+    shadowColor: COLORS.black,
+    shadowOffset: {
+        width: 0,
+        height: 2, // Controls vertical position of the shadow
+    },
+    shadowOpacity: 0.1, // Controls the transparency of the shadow
+    shadowRadius: 3.84, // Controls how blurry the shadow is
+    elevation: 6, // A general property for casting shadows on Android
+},
   iconWrapper: {
-    padding: 12,
-    borderRadius: 12,
     marginRight: 12,
+  },
+  image: {
+    width: 60,
+    height: 60,
+    borderRadius: 5,
   },
   courseInfo: {
     flex: 1,
@@ -147,6 +159,16 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+  },
+   loaderContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.5)", // optional dim background
   },
 });
 

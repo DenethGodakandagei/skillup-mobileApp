@@ -4,27 +4,57 @@ import { useAuth } from "@clerk/clerk-expo";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { styles } from "../../styles/MyLearn.style";
 
 export default function MyLearn() {
-
   const { userId } = useAuth();
 
-   const currentUser = useQuery(
+  const currentUser = useQuery(
     api.users.getUserByClerkId,
     userId ? { clerkId: userId } : "skip"
   );
-  const courses = useQuery(api.courses.getCourses);
-  const router = useRouter();
 
+  // Courses query
+  const courses = useQuery(api.courses.getCourses) || []; // ✅ fallback to []
+  const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (currentUser) {
-      
+      // you can handle user-specific logic here
     }
   }, [currentUser]);
+
+  // Function to handle card press for navigation
+  interface Course {
+    _id: string;
+    title: string;
+    image: string;
+    lessons?: unknown[]; // Replace unknown with a Lesson interface if available
+    [key: string]: any;
+  }
+
+  interface HandleCoursePress {
+    (course: Course): void;
+  }
+
+  const handleCoursePress: HandleCoursePress = (course) => {
+    router.push({
+      pathname: "/screens/CourseDetails",
+      params: { course: JSON.stringify(course) },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -42,7 +72,11 @@ export default function MyLearn() {
           </View>
 
           <TouchableOpacity style={styles.notificationButton}>
-            <MaterialIcons name="notifications" size={24} color={COLORS.primary} />
+            <MaterialIcons
+              name="notifications"
+              size={24}
+              color={COLORS.primary}
+            />
             <View style={styles.notificationDot} />
           </TouchableOpacity>
         </View>
@@ -50,54 +84,62 @@ export default function MyLearn() {
         {/* Greeting Card */}
         <View style={styles.greetingCard}>
           <View>
-            <Text style={styles.greetingTitle}>Hey, {currentUser?.fullname}</Text>
+            <Text style={styles.greetingTitle}>
+              Hey, {currentUser?.fullname}
+            </Text>
             <Text style={styles.greetingSubtitle}>
               Get Educated and find your way.
             </Text>
           </View>
-          {/* <Image
-            source={{ uri: currentUser?.profileImage }}
-            style={styles.greetingImage}
-          /> */}
         </View>
 
         {/* My Learn Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>My Learn</Text>
-          <TouchableOpacity>
-            <Text style={styles.seeAll}>See All</Text>
-          </TouchableOpacity>
-        </View>
-
-        {courses?.map((course) => (
-          <View key={course._id} style={styles.courseCard}>
-            <View style={[styles.iconWrapper, { backgroundColor: "#dbeafe" }]}>
-              <MaterialIcons name="school" size={24} color="#3b82f6" />
-            </View>
-            <View style={styles.courseInfo}>
-              <Text style={styles.courseTitle}>{course.title}</Text>
-              <Text style={styles.courseLevel}>
-                {course.levels.length} Levels
-              </Text>
-            </View>
-            <TouchableOpacity 
-              style={styles.enrollButton} 
-              onPress={() => {
-                router.push({
-                  pathname: "/screens/CourseDetails",
-                  params: { course: JSON.stringify(course) }
-                });
-              }}
-            >
-              <Text style={styles.enrollText}>Enroll</Text>
-            </TouchableOpacity>
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Available Courses</Text>
           </View>
-        ))}
-      </View>
-      </ScrollView>
 
-      
+          {/* This outer TouchableOpacity was likely incorrect and has been removed, 
+              as we now wrap each individual course card. */}
+          {courses.map((course) => {
+            return (
+              // The entire card (which was a View) is now a TouchableOpacity
+              <TouchableOpacity
+                key={course._id}
+                style={styles.courseCard}
+                onPress={() => handleCoursePress(course)} // Navigate on card press
+                activeOpacity={0.9}
+              >
+                <View style={styles.iconWrapper}>
+                  {loading && (
+                    <View style={styles.loaderContainer}>
+                      <ActivityIndicator size="small" color={COLORS.primary} />
+                    </View>
+                  )}
+                  <Image
+                    source={{
+                      uri: course.image,
+                    }}
+                    style={styles.image}
+                    onLoadStart={() => setLoading(true)}
+                    onLoadEnd={() => setLoading(false)}
+                    onError={() => {
+                      setLoading(false);
+                    }}
+                  />
+                </View>
+                <View style={styles.courseInfo}>
+                  <Text style={styles.courseTitle}>{course.title}</Text>
+                  <Text style={styles.courseLevel}>
+                    {course.lessons?.length || 0} Lessons
+                  </Text>
+                </View>
+                {/* The "View" button (enrollButton) has been removed from here */}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </ScrollView>
     </View>
   );
-};
+}

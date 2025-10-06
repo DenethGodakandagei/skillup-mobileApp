@@ -1,15 +1,23 @@
+<<<<<<< HEAD
+=======
+import { Ionicons } from "@expo/vector-icons";
+>>>>>>> main
 import React from "react";
 import {
-  View,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
   Text,
   TextInput,
-  FlatList,
   TouchableOpacity,
+<<<<<<< HEAD
   StyleSheet,
   SafeAreaView,
   ActivityIndicator,
+=======
+  View,
+>>>>>>> main
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 // Job type definition
 type Job = {
@@ -167,7 +175,6 @@ export default function App() {
         />
       )}
     </SafeAreaView>
-
   );
 }
 
@@ -238,5 +245,4 @@ const styles = StyleSheet.create({
   companyName: { color: "#9333ea", fontSize: 12, fontWeight: "500" },
   jobTitle: { fontSize: 16, fontWeight: "bold" },
   jobInfo: { color: "#6b7280", fontSize: 12 },
-
 });
