@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.lightFont,
     marginTop: 8,
-    textAlign: "center",
+    textAlign: "left",
     
   },
   subTitle: {
