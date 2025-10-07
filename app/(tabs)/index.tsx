@@ -1,23 +1,15 @@
-<<<<<<< HEAD
-=======
-import { Ionicons } from "@expo/vector-icons";
->>>>>>> main
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
+  View,
   Text,
   TextInput,
+  FlatList,
   TouchableOpacity,
-<<<<<<< HEAD
   StyleSheet,
   SafeAreaView,
   ActivityIndicator,
-=======
-  View,
->>>>>>> main
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 // Job type definition
 type Job = {
@@ -54,20 +46,22 @@ export default function App() {
         return;
       }
 
-      const formattedJobs: Job[] = data.results.map((job: any, index: number) => ({
-        id: job.id ? job.id : `job-${index}`,
-        company: job.company?.display_name || "Unknown Company",
-        logo: job.company?.display_name
-          ? job.company.display_name.substring(0, 2).toUpperCase()
-          : "NA",
-        color: "#9333ea",
-        position: job.title || "No Title",
-        location: job.location?.display_name || "Location not provided",
-        salary: job.salary_min
-          ? `$${job.salary_min} - $${job.salary_max || job.salary_min}`
-          : "Salary not disclosed",
-        saved: false,
-      }));
+      const formattedJobs: Job[] = data.results.map(
+        (job: any, index: number) => ({
+          id: job.id ? job.id : `job-${index}`,
+          company: job.company?.display_name || "Unknown Company",
+          logo: job.company?.display_name
+            ? job.company.display_name.substring(0, 2).toUpperCase()
+            : "NA",
+          color: "#9333ea",
+          position: job.title || "No Title",
+          location: job.location?.display_name || "Location not provided",
+          salary: job.salary_min
+            ? `$${job.salary_min} - $${job.salary_max || job.salary_min}`
+            : "Salary not disclosed",
+          saved: false,
+        })
+      );
 
       setJobs(formattedJobs);
     } catch (error) {
@@ -91,7 +85,6 @@ export default function App() {
           <Ionicons name="notifications-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
