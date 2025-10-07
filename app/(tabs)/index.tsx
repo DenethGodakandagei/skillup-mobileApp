@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
@@ -79,7 +78,7 @@ const filters = ["Full-time", "Part-time", "Remote", "Contract"];
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Header */}
      <View style={styles.header}>
         <Text style={styles.headerTitle}>Job Search</Text>
@@ -162,7 +161,7 @@ export default function App() {
           </View>
         )}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
