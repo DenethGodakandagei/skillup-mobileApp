@@ -14,26 +14,51 @@ import {
   FlatList,
   ActivityIndicator,
   Linking,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+} from 'react-native';
 
-// 👇 Define a TypeScript interface for your job data
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const BANNER_WIDTH = SCREEN_WIDTH - 32;
+
+// Job interface from API
 interface Job {
   title: string;
   company: string;
   link: string;
 }
 
-// Optional filter list
-const filters = ["Full-time", "Part-time", "Remote", "Contract"];
+interface Category {
+  id: number;
+  name: string;
+  count: number;
+  icon: string;
+  color: string;
+}
 
-export default function App() {
-  const [jobs, setJobs] = useState<Job[]>([]); // 👈 tell useState it's an array of Job
+// Category keyword mapping for better job filtering
+const categoryKeywords: { [key: string]: string[] } = {
+  'Software': ['developer', 'engineer', 'programmer', 'software', 'frontend', 'backend', 'fullstack', 'react', 'javascript', 'python', 'java', 'web', 'mobile', 'app', 'code', 'tech'],
+  'Hardware': ['hardware', 'technician', 'repair', 'maintenance', 'equipment', 'electronics'],
+  'Accounting': ['accountant', 'accounting', 'finance', 'bookkeeper', 'audit', 'tax', 'financial'],
+  'Banking': ['bank', 'banking', 'financial', 'credit', 'loan', 'teller', 'branch'],
+  'Sales': ['sales', 'business development', 'account executive', 'representative', 'consultant'],
+  'HR': ['human resources', 'hr', 'recruiter', 'recruitment', 'talent', 'people', 'hiring'],
+  'Management': ['manager', 'management', 'director', 'supervisor', 'lead', 'head', 'chief'],
+  'Admin': ['admin', 'administrative', 'assistant', 'coordinator', 'secretary', 'office'],
+  'Civil Engineering': ['civil', 'engineer', 'construction', 'structural', 'infrastructure', 'project'],
+  'Marketing': ['marketing', 'digital marketing', 'social media', 'content', 'brand', 'campaign', 'seo'],
+  'Design': ['designer', 'design', 'ui', 'ux', 'graphic', 'creative', 'visual', 'product design'],
+  'Healthcare': ['healthcare', 'medical', 'nurse', 'doctor', 'health', 'clinical', 'hospital', 'care'],
+  'Education': ['teacher', 'education', 'instructor', 'tutor', 'professor', 'training', 'academic'],
+  'Legal': ['legal', 'lawyer', 'attorney', 'paralegal', 'law', 'compliance', 'counsel'],
+  'Hospitality': ['hospitality', 'hotel', 'restaurant', 'chef', 'waiter', 'service', 'tourism'],
+  'Logistics': ['logistics', 'supply chain', 'warehouse', 'shipping', 'delivery', 'transport', 'driver'],
+  'Customer Service': ['customer service', 'support', 'customer care', 'help desk', 'client'],
+  'Data Science': ['data', 'analyst', 'analytics', 'scientist', 'machine learning', 'ai', 'statistics'],
+};
+
+// Category Details Screen with Real Jobs from API
+const CategoryDetailsScreen = ({ category, onBack }: any) => {
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -64,7 +89,7 @@ export default function App() {
     fetchJobs();
   }, [category]);
 
-  // Filtered jobs based on search input
+  // Filter jobs based on search
   const filteredJobs = jobs.filter(
     (job) =>
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -73,7 +98,9 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      <StatusBar barStyle="light-content" backgroundColor="#8177EA" />
+      
+      {/* Header with Back Button */}
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backButton}>
           <Text style={styles.backButtonText}>← Back</Text>
@@ -94,9 +121,15 @@ export default function App() {
         />
       </View>
 
-
-      {/* Jobs Section */}
-      <Text style={styles.sectionTitle}>Available Top Jobs</Text>
+      <View style={styles.detailsHeader}>
+        <Text style={styles.categoryIconLarge}>{category.icon}</Text>
+        <Text style={styles.categoryNameLarge}>{category.name}</Text>
+        <View style={styles.categoryBadgeLarge}>
+          <Text style={styles.categoryCountLarge}>
+            {loading ? '...' : filteredJobs.length} Jobs Available
+          </Text>
+        </View>
+      </View>
 
       {loading ? (
         <ActivityIndicator size="large" color="#8177EA" style={{ marginTop: 40 }} />
@@ -141,7 +174,7 @@ export default function App() {
           </Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -631,25 +664,68 @@ const styles = StyleSheet.create({
   categoryBadgeInactive: {
     backgroundColor: '#9CA3AF',
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#111" },
-  filterContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
+  categoryCount: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
-  filterChip: {
-    backgroundColor: "#ede9fe",
+  categoriesList: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 10,
   },
-  filterChipActive: { backgroundColor: "#9333ea" },
-  filterText: { color: "#9333ea", fontSize: 14 },
-  filterTextActive: { color: "#fff" },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginHorizontal: 20,
+  categoryListItem: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  categoryListLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  categoryIconList: {
+    fontSize: 28,
+    marginRight: 12,
+  },
+  categoryNameList: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#1F2937',
+  },
+  categoryBadgeList: {
+    backgroundColor: '#8177EA',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  categoryCountList: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  detailsHeader: {
+    padding: 16,
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  categoryIconLarge: {
+    fontSize: 60,
+    marginBottom: 12,
+  },
+  categoryNameLarge: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 12,
   },
   categoryBadgeLarge: {
