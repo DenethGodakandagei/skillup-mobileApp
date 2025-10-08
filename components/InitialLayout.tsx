@@ -1,7 +1,8 @@
+import { COLORS } from "@/constants/theme";
 import { useAuth } from "@clerk/clerk-expo";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Image, Text, View } from "react-native";
 
 export default function InitialLayout() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -16,19 +17,36 @@ export default function InitialLayout() {
 
     if (!isSignedIn && !inAuthScreen) {
       router.replace("/(auth)/login");
-    } 
-    else if (inAuthScreen && isSignedIn) {
+    } else if (isSignedIn && inAuthScreen) {
       router.replace("/(tabs)");
     }
 
-    setChecking(false);
+    // Give a tiny delay to smooth out transitions
+    const timer = setTimeout(() => setChecking(false), 400);
+
+    return () => clearTimeout(timer);
   }, [isLoaded, isSignedIn, segments]);
 
-  // While Clerk is switching sessions, show loading
+  // ✅ Show loading splash while checking session
   if (checking || !isLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: COLORS.white,
+        }}
+      >
+        <Image
+          source={require("../assets/images/icon.png")}
+          style={{ width: 100, height: 100, marginBottom: 20 }}
+          resizeMode="contain"
+        />
+        <ActivityIndicator size="large" color={COLORS.primary} />
+        <Text style={{ marginTop: 10, color: COLORS.primary, fontSize: 16 }}>
+          Setting up your account...
+        </Text>
       </View>
     );
   }

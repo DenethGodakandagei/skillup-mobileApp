@@ -3,8 +3,11 @@ import { COLORS } from "@/constants/theme";
 import { AppProvider } from "@/context/AppContext";
 import ClerkAndConvexProvider from "@/providers/ClerkAndConvexProvider";
 import { useFonts } from "expo-font";
+import * as NavigationBar from "expo-navigation-bar";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback } from "react";
+import { StatusBar } from "expo-status-bar";
+import { useCallback, useEffect } from "react";
+import { Platform } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -21,15 +24,15 @@ export default function RootLayout() {
   });
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
+    if (fontsLoaded) await SplashScreen.hideAsync();
   }, [fontsLoaded]);
 
-  // 🟡 This is IMPORTANT: Don't render the UI until fonts are ready
-  if (!fontsLoaded) {
-    return null;
-  }
+  // update the native navigation bar on Android.
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      NavigationBar.setButtonStyleAsync("dark");
+    }
+  }, []);
 
   return (
     <ClerkAndConvexProvider>
@@ -43,6 +46,7 @@ export default function RootLayout() {
           </AppProvider>
         </SafeAreaView>
       </SafeAreaProvider>
+      <StatusBar style="light" />
     </ClerkAndConvexProvider>
   );
 }

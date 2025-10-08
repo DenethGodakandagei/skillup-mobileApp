@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "samplereactnativeapp",
+    "scheme": "skillup",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,28 +15,38 @@
     },
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.harshasamarasinghe.skillup",
       "config": {
         "googleMapsApiKey": "AIzaSyAMlkdkmj9ItnonJ8KGWP0awQbTrO8d28M"
       }
     },
     "android": {
+      "package": "com.harshasamarasinghe.skillup",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            { "scheme": "skillup", "host": "*", "pathPrefix": "/" }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAMlkdkmj9ItnonJ8KGWP0awQbTrO8d28M"
         }
-      },
-      "package": "com.harshasamarasingheexpo.skillup"
+      }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png",
-      "package": "com.harshasamarasingheexpo.skillup"
+      "package": "com.harshasamarasinghe.skillup"
     },
     "plugins": [
       "expo-router",
