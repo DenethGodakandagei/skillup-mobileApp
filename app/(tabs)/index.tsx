@@ -11,22 +11,17 @@ import {
   View,
 } from "react-native";
 
-// 👇 Define a TypeScript interface for your job data
 interface Job {
   title: string;
   company: string;
   link: string;
 }
 
-// Optional filter list
-const filters = ["Full-time", "Part-time", "Remote", "Contract"];
-
 export default function App() {
-  const [jobs, setJobs] = useState<Job[]>([]); // 👈 tell useState it's an array of Job
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
 
-  // Fetch job data from your API
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -43,7 +38,6 @@ export default function App() {
     fetchJobs();
   }, []);
 
-  // Filtered jobs based on search input
   const filteredJobs = jobs.filter(
     (job) =>
       job.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -71,7 +65,6 @@ export default function App() {
           onChangeText={setSearch}
         />
       </View>
-
 
       {/* Jobs Section */}
       <Text style={styles.sectionTitle}>Available Top Jobs</Text>
@@ -107,14 +100,10 @@ export default function App() {
                 <Ionicons name="bookmark-outline" size={20} color="#9ca3af" />
               </TouchableOpacity>
             </TouchableOpacity>
-
-          </View>
-        )}
-      />
-    </View>
           )}
         />
       )}
+    </View>
   );
 }
 
@@ -142,20 +131,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   searchInput: { flex: 1, fontSize: 14, color: "#111" },
-  filterContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  filterChip: {
-    backgroundColor: "#ede9fe",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  filterChipActive: { backgroundColor: "#9333ea" },
-  filterText: { color: "#9333ea", fontSize: 14 },
-  filterTextActive: { color: "#fff" },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
