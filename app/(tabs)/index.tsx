@@ -1,7 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
+  Linking,
   StyleSheet,
   Text,
   TextInput,
@@ -9,84 +11,54 @@ import {
   View,
 } from "react-native";
 
-// Mock job data
-const featuredJobs = [
-  {
-    id: 1,
-    company: "Tech Solutions Inc.",
-    logo: "TS",
-    color: "#5b21b6",
-    position: "Software Engineer",
-    location: "San Francisco, CA",
-    salary: "$120k - $150k",
-    saved: false,
-  },
-  {
-    id: 2,
-    company: "Creative Minds Agency",
-    logo: "CM",
-    color: "#9333ea",
-    position: "Graphic Designer",
-    location: "Los Angeles, CA",
-    salary: "$60k - $80k",
-    saved: false,
-  },
-  {
-    id: 3,
-    company: "Global Finance Corp",
-    logo: "GF",
-    color: "#f3f4f6",
-    position: "Financial Analyst",
-    location: "New York, NY",
-    salary: "$80k - $100k",
-    saved: false,
-  },
-   {
-    id: 4,
-    company: "NextGen AI Labs",
-    logo: "AI",
-    color: "#2563eb",
-    position: "Machine Learning Engineer",
-    location: "Boston, MA",
-    salary: "$130k - $160k",
-    saved: false,
-  },
-  {
-    id: 5,
-    company: "HealthTech Innovations",
-    logo: "HI",
-    color: "#10b981",
-    position: "Mobile App Developer",
-    location: "Seattle, WA",
-    salary: "$100k - $130k",
-    saved: false,
-  },
-  {
-    id: 6,
-    company: "CyberSecure Ltd.",
-    logo: "CS",
-    color: "#dc2626",
-    position: "Cybersecurity Specialist",
-    location: "Austin, TX",
-    salary: "$110k - $140k",
-    saved: false,
-  },
-];
+// 👇 Define a TypeScript interface for your job data
+interface Job {
+  title: string;
+  company: string;
+  link: string;
+}
 
-// Filter options
+// Optional filter list
 const filters = ["Full-time", "Part-time", "Remote", "Contract"];
 
 export default function App() {
+  const [jobs, setJobs] = useState<Job[]>([]); // 👈 tell useState it's an array of Job
+  const [loading, setLoading] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
+
+  // Fetch job data from your API
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch("https://jobserver-7cul.onrender.com/api/jobs");
+        const data: Job[] = await response.json();
+        setJobs(data);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
+  // Filtered jobs based on search input
+  const filteredJobs = jobs.filter(
+    (job) =>
+      job.title.toLowerCase().includes(search.toLowerCase()) ||
+      job.company.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       {/* Header */}
-     <View style={styles.header}>
+      <View style={styles.header}>
         <Text style={styles.headerTitle}>Job Search</Text>
         <TouchableOpacity>
           <Ionicons name="notifications-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
@@ -95,73 +67,54 @@ export default function App() {
           placeholder="Search for jobs or companies"
           placeholderTextColor="#6b7280"
           style={styles.searchInput}
+          value={search}
+          onChangeText={setSearch}
         />
       </View>
 
 
-      {/* Filter Chips */}
-      <FlatList
-        data={filters}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={styles.filterContainer}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity
-            style={[
-              styles.filterChip,
-              index === 0 && styles.filterChipActive,
-            ]}
-          >
-            <Text
-              style={[
-                styles.filterText,
-                index === 0 && styles.filterTextActive,
-              ]}
+      {/* Jobs Section */}
+      <Text style={styles.sectionTitle}>Available Top Jobs</Text>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#9333ea" style={{ marginTop: 20 }} />
+      ) : (
+        <FlatList
+          data={filteredJobs}
+          keyExtractor={(_, index) => index.toString()}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => Linking.openURL(item.link)}
+              style={styles.jobCard}
             >
-              {item}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
+              {/* Company Logo */}
+              <View style={[styles.logo, { backgroundColor: "#ede9fe" }]}>
+                <Text style={styles.logoText}>
+                  {item.company?.charAt(0).toUpperCase() || "?"}
+                </Text>
+              </View>
 
-      {/* Featured Jobs */}
-      <Text style={styles.sectionTitle}>Featured Jobs</Text>
-      <FlatList
-        data={featuredJobs}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        renderItem={({ item }) => (
-          <View style={styles.jobCard}>
-            {/* Company Logo */}
-            <View style={[styles.logo, { backgroundColor: item.color }]}>
-              <Text
-                style={[
-                  styles.logoText,
-                  item.color === "#f3f4f6" && { color: "#9333ea" },
-                ]}
-              >
-                {item.logo}
-              </Text>
-            </View>
+              {/* Job Details */}
+              <View style={{ flex: 1 }}>
+                <Text style={styles.companyName}>{item.company}</Text>
+                <Text style={styles.jobTitle}>{item.title}</Text>
+                <Text style={styles.jobInfo}>Tap to view details</Text>
+              </View>
 
-            {/* Job Details */}
-            <View style={{ flex: 1 }}>
-              <Text style={styles.companyName}>{item.company}</Text>
-              <Text style={styles.jobTitle}>{item.position}</Text>
-              <Text style={styles.jobInfo}>{item.location}</Text>
-              <Text style={styles.jobInfo}>{item.salary}</Text>
-            </View>
-
-            {/* Bookmark */}
-            <TouchableOpacity>
-             <Ionicons name="bookmark-outline" size={20} color="#9ca3af" />
+              {/* Bookmark */}
+              <TouchableOpacity>
+                <Ionicons name="bookmark-outline" size={20} color="#9ca3af" />
+              </TouchableOpacity>
             </TouchableOpacity>
 
           </View>
         )}
       />
     </View>
+          )}
+        />
+      )}
   );
 }
 
@@ -230,7 +183,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 12,
   },
-  logoText: { color: "#fff", fontWeight: "bold" },
+  logoText: { color: "#9333ea", fontWeight: "bold", fontSize: 16 },
   companyName: { color: "#9333ea", fontSize: 12, fontWeight: "500" },
   jobTitle: { fontSize: 16, fontWeight: "bold" },
   jobInfo: { color: "#6b7280", fontSize: 12 },
