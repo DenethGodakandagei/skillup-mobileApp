@@ -8,33 +8,35 @@
     "scheme": "samplereactnativeapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyAMlkdkmj9ItnonJ8KGWP0awQbTrO8d28M"
       }
     },
-
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAMlkdkmj9ItnonJ8KGWP0awQbTrO8d28M"
         }
-      }
+      },
+      "package": "com.harshasamarasingheexpo.skillup"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png",
       "package": "com.harshasamarasingheexpo.skillup"
-
     },
     "plugins": [
       "expo-router",
@@ -47,12 +49,9 @@
           "backgroundColor": "#ffffff"
         }
       ],
-
       "expo-secure-store",
       "expo-font",
-      "expo-secure-store",
       "expo-web-browser"
-
     ],
     "extra": {
       "eas": {

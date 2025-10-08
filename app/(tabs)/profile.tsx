@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  FlatList,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -26,6 +27,7 @@ export default function Profile() {
   const { signOut, userId: clerkUserId } = useAuth();
   const router = useRouter();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [selectedProfileImage, setSelectedProfileImage] = useState<string | null>(null);
 
   // ✅ Fetch current user info
   const currentUser = useQuery(
@@ -33,11 +35,17 @@ export default function Profile() {
     clerkUserId ? { clerkId: clerkUserId } : "skip"
   );
 
-  // ✅ Fetch all enrolled courses
+  // ✅ Fetch all enrolled courses with progress (full course object)
   const enrolledCourses = useQuery(
     api.enrollments.getEnrolledCoursesByUser,
     currentUser?._id ? { userId: currentUser._id } : "skip"
-  );
+  ) ?? [];
+
+  // ✅ Fetch all certificates for current user
+  const certificates = useQuery(
+    api.certificates.getAllByUser,
+    currentUser?._id ? { userId: currentUser._id } : "skip"
+  ) ?? [];
 
   const [editedProfile, setEditedProfile] = useState({
     fullname: "",
@@ -46,7 +54,6 @@ export default function Profile() {
     profileImage: "",
   });
 
-  const [selectedProfileImage, setSelectedProfileImage] = useState<string | null>(null);
   const updateProfile = useMutation(api.users.updateProfile);
 
   useEffect(() => {
@@ -62,7 +69,6 @@ export default function Profile() {
 
   if (!currentUser) return <Loader />;
 
-  // 📌 Pick and upload cover image
   const pickCoverImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -70,7 +76,6 @@ export default function Profile() {
       aspect: [3, 1],
       quality: 1,
     });
-
     if (!result.canceled) {
       const uri = result.assets[0].uri;
       setEditedProfile((prev) => ({ ...prev, coverImage: uri }));
@@ -85,7 +90,6 @@ export default function Profile() {
       aspect: [1, 1],
       quality: 1,
     });
-
     if (!result.canceled) {
       const uri = result.assets[0].uri;
       setEditedProfile((prev) => ({ ...prev, profileImage: uri }));
@@ -162,56 +166,93 @@ export default function Profile() {
             </TouchableOpacity>
           </View>
 
-          {/* ✅ ENROLLED COURSES SECTION */}
-          <View style={{ marginTop: 20 }}>
-            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
-              Enrolled Courses
-            </Text>
+          {/* ENROLLED COURSES */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Enrolled Courses</Text>
 
-            {enrolledCourses === undefined ? (
+            {!enrolledCourses ? (
               <Loader />
-            ) : enrolledCourses?.length === 0 ? (
-              <Text style={{ color: COLORS.darkGrey }}>No courses enrolled yet.</Text>
+            ) : enrolledCourses.length === 0 ? (
+              <Text style={{ color: COLORS.red }}>No courses enrolled yet.</Text>
             ) : (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {enrolledCourses.map((course: any) => (
+              <FlatList
+                data={enrolledCourses}
+                keyExtractor={(item) => item._id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
                   <TouchableOpacity
-                    key={course._id}
-                    style={{
-                      width: 180,
-                      marginRight: 12,
-                      backgroundColor: COLORS.white,
-                      borderRadius: 12,
-                      shadowColor: COLORS.black,
-                      shadowOpacity: 0.1,
-                      shadowRadius: 4,
-                      elevation: 2,
-                    }}
+                    key={item._id}
+                    style={styles.courseCard}
                     onPress={() =>
                       router.push({
                         pathname: "/screens/EnrolledCourse",
-                        params: { course: JSON.stringify(course) },
+                        params: { course: JSON.stringify(item) },
                       })
                     }
+                    activeOpacity={0.8}
                   >
-                    <Image
-                      source={{ uri: course.image }}
-                      style={{ width: "100%", height: 100, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                    />
-                    <View style={{ padding: 8 }}>
-                      <Text style={{ fontWeight: "600", fontSize: 14 }} numberOfLines={2}>
-                        {course.title}
+                    <Image source={{ uri: item.image }} style={styles.courseImage} />
+                    <View style={styles.courseInfo}>
+                      <Text style={styles.courseTitle} numberOfLines={2}>
+                        {item.title}
                       </Text>
+
+                      {/* Show progress bar only if not completed */}
+                      {item.progress >= 100 || item.isCompleted ? (
+                        <Text style={{ color: COLORS.primary, fontWeight: "600", marginTop: 4 }}>
+                          Completed
+                        </Text>
+                      ) : (
+                        <View style={styles.progressBar}>
+                          <View style={[styles.progressFill, { width: `${item.progress}%` }]} />
+                        </View>
+                      )}
                     </View>
                   </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+
+          {/* CERTIFICATES */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Certificates</Text>
+            {certificates.length === 0 ? (
+              <Text style={{ color: "#6B7280", marginTop: 8 }}>No certificates available yet.</Text>
+            ) : (
+              <View style={{ marginTop: 12 }}>
+                {certificates.map((item) => (
+                  <TouchableOpacity
+                    key={item._id}
+                    style={styles.certificateCard}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/screens/ViewCertificate",
+                        params: { certificateId: item._id },
+                      })
+                    }
+                    activeOpacity={0.8}
+                  >
+                    <Image source={{ uri: item.courseSnapshot.image }} style={styles.certificateImage} />
+                    <View>
+                      <Text style={styles.certTitle} numberOfLines={1}>
+                        {item.courseSnapshot.title}
+                      </Text>
+                      <Text style={styles.certSub}>
+                        {item.courseSnapshot.category} • {new Date(item.issuedAt).toLocaleDateString()}
+                      </Text>
+                    </View>
+                    <Ionicons name="ribbon" size={28} color={COLORS.primary} />
+                  </TouchableOpacity>
                 ))}
-              </ScrollView>
+              </View>
             )}
           </View>
         </View>
       </ScrollView>
 
-      {/* PROFILE IMAGE PREVIEW MODAL */}
+      {/* PROFILE IMAGE MODAL */}
       <Modal visible={!!selectedProfileImage} animationType="slide" transparent={true} onRequestClose={() => setSelectedProfileImage(null)}>
         <View style={styles.modalBackdrop}>
           {selectedProfileImage && (

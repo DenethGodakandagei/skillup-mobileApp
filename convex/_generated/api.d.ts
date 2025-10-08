@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as certificateGeneration from "../certificateGeneration.js";
+import type * as certificates from "../certificates.js";
 import type * as convexHelpers from "../convexHelpers.js";
 import type * as courses from "../courses.js";
 import type * as enrollments from "../enrollments.js";
@@ -30,6 +31,7 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   certificateGeneration: typeof certificateGeneration;
+  certificates: typeof certificates;
   convexHelpers: typeof convexHelpers;
   courses: typeof courses;
   enrollments: typeof enrollments;

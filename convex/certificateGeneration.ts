@@ -90,3 +90,18 @@ export const getDetails = query({
     return certificate as Doc<"certificates">;
   },
 });
+
+export const checkIfCertificateExists = query({
+  args: {
+    userId: v.id("users"),
+    courseId: v.id("courses"),
+  },
+  handler: async (ctx, { userId, courseId }) => {
+    const certificate = await ctx.db
+      .query("certificates")
+      .withIndex("by_user_course", (q) => q.eq("userId", userId).eq("courseId", courseId))
+      .unique();
+
+    return certificate ? true : false;
+  },
+});

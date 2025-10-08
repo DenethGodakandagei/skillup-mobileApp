@@ -114,7 +114,8 @@ export default defineSchema({
       image: v.string(),
     }),
   })
-    .index("by_unique_code", ["uniqueCode"])
-    .index("by_user", ["userId"])
-    .index("by_course", ["courseId"]),
+   .index("by_unique_code", ["uniqueCode"])
+  .index("by_user", ["userId"])
+  .index("by_course", ["courseId"])
+  .index("by_user_course", ["userId", "courseId"]),
 });
