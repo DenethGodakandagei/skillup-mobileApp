@@ -118,6 +118,18 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: COLORS.primary,
   },
+  finishBtnBox: {
+    width: "100%",
+    padding: 14,
+    paddingTop:50,
+  },
+  finishBtn: {
+    backgroundColor: COLORS.primary,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   nextButtonContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,

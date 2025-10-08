@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   FlatList,
   Linking,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
@@ -52,7 +51,7 @@ export default function App() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Job Search</Text>
@@ -108,10 +107,14 @@ export default function App() {
                 <Ionicons name="bookmark-outline" size={20} color="#9ca3af" />
               </TouchableOpacity>
             </TouchableOpacity>
+
+          </View>
+        )}
+      />
+    </View>
           )}
         />
       )}
-    </SafeAreaView>
   );
 }
 
