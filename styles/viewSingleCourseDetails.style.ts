@@ -141,6 +141,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.5)", // optional dim background
   },
+
+    completionBadge: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        backgroundColor: COLORS.primary,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 5,
+        zIndex: 5,
+    },
+    completionText: {
+        color: COLORS.white,
+        fontWeight: 'bold',
+        fontSize: 12,
+    },
 });
 
 export default styles;

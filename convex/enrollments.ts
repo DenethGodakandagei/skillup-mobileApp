@@ -1,4 +1,3 @@
-// convex/enrollments.ts
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
@@ -52,39 +51,48 @@ export const completeSubLesson = mutation({
     const enrollment = await ctx.db.get(enrollmentId);
     if (!enrollment) throw new Error("Enrollment not found");
 
+    // Prevent duplicates
     const alreadyCompleted = enrollment.completedLessons.some(
       (c: any) => c.lessonIndex === lessonIndex && c.subLessonIndex === subLessonIndex
     );
-
-    if (alreadyCompleted) return { status: "already_completed" };
+    if (alreadyCompleted) {
+      return { status: "already_completed", progress: enrollment.progress, isCompleted: enrollment.isCompleted };
+    }
 
     const course = await ctx.db.get(enrollment.courseId);
     if (!course) throw new Error("Course not found");
 
-    const totalSubLessons = course.lessons.reduce(
-      (sum: number, lesson: any) => sum + lesson.subLessons.length,
-      0
-    );
-
+    // Add the new completed sub-lesson
     const updatedCompletedLessons = [
       ...enrollment.completedLessons,
       { lessonIndex, subLessonIndex, completedAt: new Date().toISOString() },
     ];
 
-    const progress = (updatedCompletedLessons.length / totalSubLessons) * 100;
-    const isCompleted = progress >= 100;
+    // Remove duplicates just in case
+    const uniqueCompletedLessons = updatedCompletedLessons.filter(
+      (v, i, a) =>
+        a.findIndex((t) => t.lessonIndex === v.lessonIndex && t.subLessonIndex === v.subLessonIndex) === i
+    );
+
+    // Count all sub-lessons in the course
+    const totalSubLessons = course.lessons.reduce((sum, lesson) => sum + lesson.subLessons.length, 0);
+
+    // Calculate progress
+    const progress = (uniqueCompletedLessons.length / totalSubLessons) * 100;
+
+    // Set isCompleted = true if all sub-lessons done
+    const isCompleted = uniqueCompletedLessons.length === totalSubLessons;
 
     await ctx.db.patch(enrollmentId, {
-      completedLessons: updatedCompletedLessons,
-      progress,
+      completedLessons: uniqueCompletedLessons,
+      progress: isCompleted ? 100 : progress,
       isCompleted,
       lastAccessedAt: new Date().toISOString(),
     });
 
-    return { status: "success", progress };
+    return { status: "success", progress: isCompleted ? 100 : progress, isCompleted };
   },
 });
-
 
 export const getEnrollmentByUserAndCourse = query({
   args: { userId: v.id("users"), courseId: v.id("courses") },
@@ -100,13 +108,11 @@ export const getEnrollmentByUserAndCourse = query({
 export const getEnrolledCoursesByUser = query({
   args: { userId: v.id("users") },
   handler: async (ctx, { userId }) => {
-    // Find all enrollment records for this user
     const enrollments = await ctx.db
       .query("enrollments")
       .withIndex("by_user", (q) => q.eq("userId", userId))
       .collect();
 
-    // Fetch the course details for each enrollment
     const courses = await Promise.all(
       enrollments.map(async (enrollment) => {
         const course = await ctx.db.get(enrollment.courseId);
@@ -114,8 +120,6 @@ export const getEnrolledCoursesByUser = query({
       })
     );
 
-    // Filter out any nulls (in case a course was deleted)
     return courses.filter((c) => c !== null);
   },
 });
-

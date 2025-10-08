@@ -127,7 +127,6 @@ export default function Lessons() {
             userId: convexUserId,
             courseId: courseData._id,
           });
-          // Fetch the full enrollment object after enrolling
           e = await convex.query(api.enrollments.getEnrollmentByUserAndCourse, {
             userId: convexUserId,
             courseId: courseData._id,
@@ -189,7 +188,7 @@ export default function Lessons() {
 
     try {
       // Complete the sublesson
-      await completeSubLessonMutation({
+      const result = await completeSubLessonMutation({
         lessonIndex: mainLessonIndex,
         subLessonIndex: localSubLessonIndex,
         enrollmentId: enrollment._id,
@@ -203,28 +202,55 @@ export default function Lessons() {
 
       if (updatedEnrollment) {
         setEnrollment(updatedEnrollment);
-      }
 
-      // Update local state
-      setAllSubLessons((prev) =>
-        prev.map((s, idx) =>
-          idx === currentIndex ? { ...s, status: "completed" } : s
-        )
-      );
+        // Update local sub-lesson statuses
+        setAllSubLessons((prev) =>
+          prev.map((s, idx) => {
+            const { mainLessonIndex: mi, localSubLessonIndex: si } = findLessonIndices(courseData, idx);
+            const completed = updatedEnrollment.completedLessons.some(
+              (cl: any) => cl.lessonIndex === mi && cl.subLessonIndex === si
+            );
+            return { ...s, status: completed ? "completed" : "incompleted" };
+          })
+        );
+
+        // If course completed, show alert
+        if (updatedEnrollment.isCompleted) {
+          Alert.alert(
+            "Course Complete",
+            "You have completed all lessons! 🎉 You can now generate your E-Certificate."
+          );
+        }
+      }
     } catch (err) {
       console.error(err);
     }
 
-    if (isLastSubLessonOverall) {
-      Alert.alert("Course Complete", "You have completed all lessons! 🎉 You can now generate your E certificate.");
-      return;
-    }
-
-    setCurrentIndex(currentIndex + 1);
+    if (!isLastSubLessonOverall) setCurrentIndex(currentIndex + 1);
   };
 
-  //certificate generation
-  const GenerateCertificate = async () => {};
+  // Certificate generation
+  const GenerateCertificate = async () => {
+    Alert.alert(
+      "Course Completed",
+      "You can now generate your \nE-Certificate.",
+      [
+        {
+          text: "Generate Certificate",
+          onPress: () => {
+            router.push({
+              pathname: "screens/Certificate",
+              params: {
+                userId: convexUserId,       
+                courseId: courseData._id,
+              },
+            });
+          },
+        },
+        { text: "Cancel", style: "cancel" },
+      ]
+    );
+  };
 
   const handlePrevious = () => {
     if (!isFirstSubLesson) setCurrentIndex(currentIndex - 1);
@@ -282,30 +308,40 @@ export default function Lessons() {
 
         <Text style={styles.notesTitle}>Notes</Text>
         <View style={styles.notesContainer}>
-        
             <Text
-            style={styles.notes}
-            numberOfLines={showFullNotes ? undefined : 4} // show 3 lines initially
+              style={styles.notes}
+              numberOfLines={showFullNotes ? undefined : 4}
             >
-            {currentNotes}
+              {currentNotes}
             </Text>
-        <TouchableOpacity onPress={() => setShowFullNotes(!showFullNotes)} activeOpacity={0.8}>
-            <Text style={styles.showMoreText}>
-            {showFullNotes ? "Show less ▲" : "Show more ▼"}
-            </Text>
-        </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowFullNotes(!showFullNotes)} activeOpacity={0.8}>
+              <Text style={styles.showMoreText}>
+                {showFullNotes ? "Show less ▲" : "Show more ▼"}
+              </Text>
+            </TouchableOpacity>
         </View>
 
         <View style={styles.progressContainer}>
-            <View style={styles.progressTextContainer}>
-                <Text style={styles.progressText}>Current Progress</Text>
-                <Text style={styles.progressText}>({Math.round(progressPercentage)}%)</Text>
-            </View>
+          <View style={styles.progressTextContainer}>
+            <Text style={styles.progressText}>Current Progress</Text>
+            <Text style={styles.progressText}>({Math.round(progressPercentage)}%)</Text>
+          </View>
           
           <View style={styles.progressBar}>
             <View style={[styles.progressFill, { width: `${progressPercentage}%` }]} />
           </View>
         </View>
+
+        {progressPercentage >= 100 ? (
+        <View style= {styles.finishBtnBox}>
+          <TouchableOpacity style={styles.finishBtn} onPress={GenerateCertificate} activeOpacity={0.8}>
+          <Text style={styles.navButtonText}>Finish Course</Text>
+        </TouchableOpacity>
+        </View>
+        ) : (
+          <View></View>
+        )}
+        
       </ScrollView>
 
       <View style={styles.footer}>
@@ -317,17 +353,11 @@ export default function Lessons() {
         >
           <Text style={styles.previousText}>Previous</Text>
         </TouchableOpacity>
-        {isLastSubLessonOverall ? (
-            <TouchableOpacity style={styles.navButton} onPress={GenerateCertificate} activeOpacity={0.8}>
-          <Text style={styles.navButtonText}>Finish
-          </Text>
+
+        <TouchableOpacity style={styles.navButton} onPress={handleNext} activeOpacity={0.8}>
+          <Text style={styles.navButtonText}>Next</Text>
         </TouchableOpacity>
-        ) : (<TouchableOpacity style={styles.navButton} onPress={handleNext} activeOpacity={0.8}>
-          <Text style={styles.navButtonText}>Next
-          </Text>
-        </TouchableOpacity>)}
-        
-        
+  
       </View>
     </View>
   );
