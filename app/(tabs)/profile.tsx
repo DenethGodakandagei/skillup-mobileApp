@@ -110,17 +110,17 @@ export default function Profile() {
           <Text style={styles.username}>{currentUser.username || "username"}</Text>
         </View>
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerIcon}>
+          <TouchableOpacity style={styles.headerIcon} activeOpacity={0.8}>
             <Ionicons name="share-outline" size={24} color={COLORS.primary} />
           </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom:50}}>
         <View style={styles.profileInfo}>
           {/* COVER IMAGE */}
           <View style={styles.coverContainer}>
-            <TouchableOpacity onPress={() => setSelectedProfileImage(currentUser.coverImage || null)}>
+            <TouchableOpacity onPress={() => setSelectedProfileImage(currentUser.coverImage || null)} activeOpacity={0.8}>
               {currentUser.coverImage ? (
                 <Image source={{ uri: currentUser.coverImage }} style={styles.coverImage} />
               ) : (
@@ -129,13 +129,13 @@ export default function Profile() {
             </TouchableOpacity>
 
             {/* Cover Edit Button */}
-            <TouchableOpacity style={styles.coverEditButton} onPress={pickCoverImage}>
+            <TouchableOpacity style={styles.coverEditButton} onPress={pickCoverImage} activeOpacity={0.8}>
               <Ionicons name="camera-outline" size={22} color={COLORS.white} />
             </TouchableOpacity>
 
             {/* AVATAR */}
             <View style={styles.avatarContainer}>
-              <TouchableOpacity onPress={pickProfileImage}>
+              <TouchableOpacity onPress={pickProfileImage} activeOpacity={0.8}>
                 {currentUser.profileImage ? (
                   <Image source={{ uri: currentUser.profileImage }} style={styles.avatar} />
                 ) : (
@@ -151,20 +151,21 @@ export default function Profile() {
 
           {/* ACTION BUTTONS */}
           <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.editButton} onPress={() => setIsEditModalVisible(true)}>
+            <TouchableOpacity style={styles.editButton} onPress={() => setIsEditModalVisible(true)} activeOpacity={0.8}>
               <Text style={styles.editButtonText}>Edit Profile</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.shareButton}>
+            <TouchableOpacity style={styles.shareButton} activeOpacity={0.8}>
               <Text style={styles.shareButtonText}>Share Profile</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.signoutButton} onPress={() => signOut()}>
+            <TouchableOpacity style={styles.signoutButton} onPress={() => signOut()} activeOpacity={0.8}>
               <Text style={styles.signoutButtonText}>Sign Out</Text>
             </TouchableOpacity>
           </View>
+         
 
           {/* ENROLLED COURSES */}
           <View style={styles.section}>
@@ -249,6 +250,12 @@ export default function Profile() {
               </View>
             )}
           </View>
+            <Text style={{fontSize:13, fontWeight:600, textAlign: "center", paddingBottom: 5, paddingTop: 20}}> You can verify your cerificates or others by using QR code.</Text>
+           <View style={styles.actionButtons}>
+            <TouchableOpacity style={styles.scanButton} onPress={() => router.push("/scan")} activeOpacity={0.8}>
+              <Text style={styles.editButtonText}>Scan Certificates</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
 
@@ -258,7 +265,7 @@ export default function Profile() {
           {selectedProfileImage && (
             <View style={styles.profileImageModalDetailContainer}>
               <View style={styles.profileImageModalDetailHeader}>
-                <TouchableOpacity onPress={() => setSelectedProfileImage(null)}>
+                <TouchableOpacity onPress={() => setSelectedProfileImage(null)} activeOpacity={0.8}>
                   <Ionicons name="close" size={24} color={COLORS.white} />
                 </TouchableOpacity>
               </View>
@@ -275,7 +282,7 @@ export default function Profile() {
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Edit Profile</Text>
-                <TouchableOpacity onPress={() => setIsEditModalVisible(false)}>
+                <TouchableOpacity onPress={() => setIsEditModalVisible(false)} activeOpacity={0.8}>
                   <Ionicons name="close" size={24} color={COLORS.black} />
                 </TouchableOpacity>
               </View>
@@ -302,7 +309,7 @@ export default function Profile() {
                 />
               </View>
 
-              <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile}>
+              <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile} activeOpacity={0.8}>
                 <Text style={styles.saveButtonText}>Save Changes</Text>
               </TouchableOpacity>
             </View>

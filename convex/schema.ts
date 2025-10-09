@@ -81,7 +81,7 @@ export default defineSchema({
     .index("by_user_course", ["userId", "courseId"]), // To quickly check enrollment
 
 
-  // ---------------------- CERTIFICATES TABLE (Enhanced) ----------------------
+ // ---------------------- CERTIFICATES TABLE ----------------------
   certificates: defineTable({
     userId: v.id("users"),
     courseId: v.id("courses"),
@@ -98,7 +98,7 @@ export default defineSchema({
     totalSubLessons: v.number(),
 
     // Certificate details
-    qrCodeUrl: v.string(),         // stored QR image
+    qrCodeUrl: v.string(),         // stored QR image (SVG)
     uniqueCode: v.string(),        // Unique alphanumeric code for verification
 
     // Snapshot of user & course data at generation time
@@ -112,9 +112,11 @@ export default defineSchema({
       title: v.string(),
       category: v.string(),
       image: v.string(),
+      totalLessons: v.number(),     // included
+      totalSubLessons: v.number(),  // included
     }),
   })
-   .index("by_unique_code", ["uniqueCode"])
+  .index("by_unique_code", ["uniqueCode"])
   .index("by_user", ["userId"])
   .index("by_course", ["courseId"])
   .index("by_user_course", ["userId", "courseId"]),

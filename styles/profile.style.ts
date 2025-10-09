@@ -119,6 +119,13 @@ coverEditButton: {
     borderRadius: 8,
     alignItems: "center",
   },
+  scanButton: {
+    flex: 1,
+    backgroundColor: COLORS.primary,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+  },
   editButtonText: {
     color: COLORS.white,
     fontWeight: "600",

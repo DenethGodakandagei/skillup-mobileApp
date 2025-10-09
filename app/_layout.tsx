@@ -46,7 +46,7 @@ export default function RootLayout() {
           </AppProvider>
         </SafeAreaView>
       </SafeAreaProvider>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </ClerkAndConvexProvider>
   );
 }
