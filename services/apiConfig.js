@@ -5,7 +5,7 @@ export const API_CONFIG = {
     },
     GEMINI: {
       URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
-      API_KEY: 'AIzaSyDJhQc1kwqpiLHPhK70m7Ifnqve7O5CnR0', // replace with your own
+      API_KEY: 'AIzaSyAJFa-p4KMvn5HxbCyDyQfjCCvYfiWkogs', // replace with your own
     },
     HUGGING_FACE: {
       URL: 'https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium',
