@@ -1,19 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { COLORS } from "@/constants/theme";
+import { MaterialIcons } from "@expo/vector-icons";
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  TextInput,
+  ActivityIndicator,
   Dimensions,
+  FlatList,
+  Linking,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  FlatList,
-  ActivityIndicator,
-  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -98,8 +98,8 @@ const CategoryDetailsScreen = ({ category, onBack }: any) => {
   
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#8177EA" />
+    <View style={styles.container}>
+      {/* <StatusBar barStyle="light-content" backgroundColor="#8177EA" /> */}
       
       {/* Header with Back Button */}
       <View style={styles.header}>
@@ -175,7 +175,7 @@ const CategoryDetailsScreen = ({ category, onBack }: any) => {
           </Text>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -286,14 +286,18 @@ const HomeScreen = ({ onCategorySelect }: any) => {
   const totalCategories = categories.filter(cat => cat.count > 0).length;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#8177EA" />
+    <View style={styles.container}>
+      {/* <StatusBar barStyle="light-content" backgroundColor="#8177EA" /> */}
       
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Choose Your Career Path</Text>
         <TouchableOpacity style={styles.notificationButton}>
-          <Text style={styles.notificationIcon}>🔔</Text>
+          <MaterialIcons
+              name="notifications-none"
+              size={24}
+              color={COLORS.primary}
+            />
         </TouchableOpacity>
       </View>
 
@@ -438,7 +442,7 @@ const HomeScreen = ({ onCategorySelect }: any) => {
 
         <View style={{ height: 40 }} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -492,7 +496,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   notificationButton: {
-    position: 'absolute',
+    padding: 8,
+    backgroundColor: COLORS.white,
+    borderRadius: 24,
+    position: "absolute",
     right: 16,
   },
   notificationIcon: {
