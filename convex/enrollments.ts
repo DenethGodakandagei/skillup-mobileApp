@@ -105,21 +105,40 @@ export const getEnrollmentByUserAndCourse = query({
   },
 });
 
+
 export const getEnrolledCoursesByUser = query({
   args: { userId: v.id("users") },
   handler: async (ctx, { userId }) => {
+    // 1️⃣ Fetch all enrollments of the user
     const enrollments = await ctx.db
       .query("enrollments")
       .withIndex("by_user", (q) => q.eq("userId", userId))
       .collect();
 
-    const courses = await Promise.all(
+    if (!enrollments || enrollments.length === 0) return [];
+
+    // 2️⃣ Map each enrollment to full course info + progress
+    const coursesWithProgress = await Promise.all(
       enrollments.map(async (enrollment) => {
         const course = await ctx.db.get(enrollment.courseId);
-        return course;
+        if (!course) return null;
+
+        return {
+          _id: course._id,
+          title: course.title,
+          image: course.image,
+          category: course.category,
+          description: course.description ?? "",
+          lessons: course.lessons ?? [],       // Include lessons if available
+          progress: enrollment.progress ?? 0,  // User progress
+          isCompleted: enrollment.isCompleted ?? false,
+          completedLessons: enrollment.completedLessons ?? [],
+        };
       })
     );
 
-    return courses.filter((c) => c !== null);
+    // 3️⃣ Filter out null results (in case some courses were deleted)
+    return coursesWithProgress.filter((c) => c !== null);
   },
 });
+

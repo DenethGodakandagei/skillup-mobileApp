@@ -119,6 +119,13 @@ coverEditButton: {
     borderRadius: 8,
     alignItems: "center",
   },
+  scanButton: {
+    flex: 1,
+    backgroundColor: COLORS.primary,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+  },
   editButtonText: {
     color: COLORS.white,
     fontWeight: "600",
@@ -126,19 +133,19 @@ coverEditButton: {
   },
   shareButton: {
     flex: 1,
-    backgroundColor: COLORS.lighPurple,
+    backgroundColor: COLORS.grey,
     padding: 10,
     borderRadius: 8,
     alignItems: "center",
   },
   shareButtonText: {
-    color: COLORS.primary,
+    color: COLORS.black,
     fontWeight: "600",
     fontSize: 14,
   },
   signoutButton: {
     flex: 1,
-    backgroundColor: COLORS.lighPurple,
+    backgroundColor: COLORS.grey,
     padding: 10,
     borderRadius: 8,
     alignItems: "center",
@@ -208,5 +215,54 @@ coverEditButton: {
     backgroundColor: "rgba(6, 11, 11, 0.8)",
     justifyContent: "center",
   },
+
+
+  section: { marginTop: 24, paddingHorizontal: 24 },
+  sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 12, color: "#111827" },
+  courseCard: {
+    width: 160,
+    marginRight: 12,
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  courseImage: { width: "100%", height: 96 },
+  courseInfo: { padding: 8 },
+  courseTitle: { fontSize: 14, fontWeight: "600", marginBottom: 4, color: "#111827" },
+  progressBar: { width: "100%", height: 6, backgroundColor: "#E5E7EB", borderRadius: 3 },
+  progressFill: { height: 6, backgroundColor: COLORS.primary, borderRadius: 3 },
+
+  certificateCard: {
+    flexDirection: "row",
+    backgroundColor: COLORS.white,
+    padding: 12,
+    borderRadius: 12,
+    justifyContent:"space-between",
+    alignItems: "center",
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    width: width -50, // full screen width minus horizontal margin
+    alignSelf: "center", // center the card
+  },
+ 
+certificateImage: {
+  width: 80,
+  height: 80,
+  borderRadius: 12,
+},
+certTitle: {
+  fontWeight: "600",
+  fontSize: 18,
+  marginBottom:5,
+  color: COLORS.black,
+},
+certSub: {
+  fontSize: 15,
+  color: COLORS.lightFont,
+  marginTop: 2,
+},
   
 });
