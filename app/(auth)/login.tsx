@@ -1,10 +1,11 @@
-import { COLORS } from '@/constants/theme'
-import { styles } from '@/styles/auth.styles'
-import { useSSO } from '@clerk/clerk-expo'
-import { Ionicons } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'
-import React, { useState } from 'react'
-import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native'
+import { COLORS } from '@/constants/theme';
+import { styles } from '@/styles/auth.styles';
+import { useSSO } from '@clerk/clerk-expo';
+import { Ionicons } from '@expo/vector-icons';
+import * as Linking from 'expo-linking';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Login() {
   const { startSSOFlow } = useSSO();
@@ -14,17 +15,21 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      const { createdSessionId, setActive } = await startSSOFlow({ strategy: "oauth_google" });
+
+      // ✅ Use explicit redirect URL that matches your callback screen
+      const redirectUrl = Linking.createURL('/sso-callback');
+
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: 'oauth_google',
+        redirectUrl,
+      });
 
       if (setActive && createdSessionId) {
         await setActive({ session: createdSessionId });
-        // Small delay to ensure session state syncs with router
-        setTimeout(() => {
-          router.replace("/(tabs)");
-        }, 800);
+        setTimeout(() => router.replace('/(tabs)'), 800);
       }
     } catch (error) {
-      console.log("Auth error: ", error);
+      console.log('Auth error: ', error);
       setLoading(false);
     }
   };
@@ -51,19 +56,14 @@ export default function Login() {
 
       <View style={styles.illustrationContainer}>
         <Image
-          source={require("../../assets/images/job-search-man.png")}
+          source={require('../../assets/images/job-search-man.png')}
           style={styles.illustration}
-          resizeMode='cover'
+          resizeMode="cover"
         />
       </View>
 
-      {/* LOGIN SECTION */}
       <View style={styles.loginSection}>
-        <TouchableOpacity
-          style={styles.googleButton}
-          onPress={handleGoogleSignIn}
-          activeOpacity={0.9}
-        >
+        <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn} activeOpacity={0.9}>
           <View style={styles.googleIconContainer}>
             <Ionicons name="logo-google" size={20} color={COLORS.white} />
           </View>

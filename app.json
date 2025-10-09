@@ -30,12 +30,12 @@
       "intentFilters": [
         {
           "action": "VIEW",
-          "data": [
-            { "scheme": "skillup", "host": "*", "pathPrefix": "/" }
-          ],
+          "data": [{ "scheme": "skillup" }],
           "category": ["BROWSABLE", "DEFAULT"]
         }
       ],
+
+
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAMlkdkmj9ItnonJ8KGWP0awQbTrO8d28M"
