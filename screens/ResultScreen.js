@@ -1,12 +1,13 @@
 // src/screens/ResultsScreen.js
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useSegments } from "expo-router";
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import JobRoleCard from "../components/JobRoleCard";
 import { useApp } from "../context/AppContext";
@@ -16,6 +17,16 @@ const ResultsScreen = () => {
   const router = useRouter();
   const { state, dispatch } = useApp();
   const { jobSuggestions } = state;
+  const segments = useSegments(); 
+  
+const handleBack = () => {
+    if (segments && segments.length > 1) {
+      router.back();
+    } else {
+      Alert.alert("No previous screen", "Returning to Home");
+      router.push("/"); // fallback route (home or start)
+    }
+  };
 
   const handleNewAnalysis = () => {
     dispatch({ type: "RESET" });
@@ -42,7 +53,7 @@ const ResultsScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.back()}
+          onPress={handleBack}
         >
           <MaterialIcons name="arrow-back" size={24} color="#1e293b" />
         </TouchableOpacity>
