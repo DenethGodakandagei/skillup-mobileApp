@@ -98,8 +98,8 @@ const CategoryDetailsScreen = ({ category, onBack }: any) => {
   
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#8177EA" />
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#828282ff" />
       
       {/* Header with Back Button */}
       <View style={styles.header}>
@@ -175,7 +175,7 @@ const CategoryDetailsScreen = ({ category, onBack }: any) => {
           </Text>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
