@@ -153,11 +153,10 @@ export default function MyLearn() {
 
           <TouchableOpacity style={styles.notificationButton}>
             <MaterialIcons
-              name="notifications"
+              name="notifications-none"
               size={24}
               color={COLORS.primary}
             />
-            <View style={styles.notificationDot} />
           </TouchableOpacity>
         </View>
 
