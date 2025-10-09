@@ -137,7 +137,7 @@ const UploadScreen = () => {
             <StepItem
               stepNumber="1"
               title="Upload Your CV"
-              description="Take a photo, select from gallery, or upload a PDF"
+              description="Take a photo, select from gallery"
               icon="file-upload"
             />
             <StepItem
