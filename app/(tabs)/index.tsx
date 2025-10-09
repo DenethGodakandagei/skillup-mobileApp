@@ -95,6 +95,7 @@ const CategoryDetailsScreen = ({ category, onBack }: any) => {
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.company.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -244,33 +245,33 @@ const HomeScreen = ({ onCategorySelect }: any) => {
   const banners = [
     {
       id: 1,
-      title: 'skill up',
+      title: 'Skill up',
       subtitle: 'jobs • careers • recruitment',
       mainText: 'Meet us at EDEX Mid Year Expo 2025',
       dateText: '13th & 14th Sept. @ BMICH',
       stallText: 'Stall No R 51',
       bgColor: '#6B5DD3',
-      accentColor: '#FFC107',
+      accentColor: '#dee2d5ff',
     },
     {
       id: 2,
-      title: 'skill up',
+      title: 'Skill up',
       subtitle: 'jobs • careers • recruitment',
       mainText: 'Join Our Career Workshop',
       dateText: 'Every Saturday @ 10:00 AM',
       stallText: 'Register Now - Free Entry',
-      bgColor: '#8177EA',
-      accentColor: '#4ADE80',
+      bgColor: '#6B5DD3',
+      accentColor: '#c1d9e6ff',
     },
     {
       id: 3,
-      title: 'skill up',
+      title: 'Skill up',
       subtitle: 'jobs • careers • recruitment',
       mainText: 'Premium Job Listings Available',
       dateText: 'Get Hired in 30 Days',
       stallText: 'Upload Your CV Today',
-      bgColor: '#9D8FEE',
-      accentColor: '#FB923C',
+      bgColor: '#6B5DD3',
+      accentColor: '#d2e1ceff',
     },
   ];
 
@@ -477,9 +478,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: '#ffffffff',
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '800',
   },
   backButton: {
     position: 'absolute',
@@ -806,6 +807,7 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     textAlign: 'center',
   },
+  
 });
 
 export default App;
