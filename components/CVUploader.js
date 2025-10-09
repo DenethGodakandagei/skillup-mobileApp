@@ -1,11 +1,11 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
-    Dimensions,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -57,10 +57,7 @@ const CVUploader = ({ onImagePicker, onCamera, onDocumentPicker }) => {
             <MaterialIcons name="image" size={16} color="#6366f1" />
             <Text style={styles.formatText}>JPG, PNG</Text>
           </View>
-          <View style={styles.formatItem}>
-            <MaterialIcons name="picture-as-pdf" size={16} color="#ef4444" />
-            <Text style={styles.formatText}>PDF</Text>
-          </View>
+          
         </View>
       </View>
     </View>
