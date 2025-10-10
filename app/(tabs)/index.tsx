@@ -1,10 +1,14 @@
 import { COLORS } from "@/constants/theme";
-import { MaterialIcons } from "@expo/vector-icons";
+import { api } from "@/convex/_generated/api";
+import { useAuth } from "@clerk/clerk-expo";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useQuery } from "convex/react";
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
   FlatList,
+  Image,
   Linking,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -99,19 +103,23 @@ const CategoryDetailsScreen = ({ category, onBack }: any) => {
 
   return (
     <View style={styles.container}>
-      {/* <StatusBar barStyle="light-content" backgroundColor="#8177EA" /> */}
-      
-      {/* Header with Back Button */}
+
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Text style={styles.backButtonText}>← Back</Text>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={onBack}
+        >
+          <Ionicons name="chevron-back" size={24} color="#1D3D47" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{category.name}</Text>
-        <View style={{ width: 60 }} />
+        <TouchableOpacity style={styles.iconButton}>
+          <MaterialIcons name="favorite-border" size={22} color="#1D3D47" />
+        </TouchableOpacity>
       </View>
 
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
+      <View style={styles.searchContainer2}>
         <Text style={styles.searchIcon}>🔍</Text>
         <TextInput
           style={styles.searchInput}
@@ -188,6 +196,19 @@ const HomeScreen = ({ onCategorySelect }: any) => {
   const [totalJobs, setTotalJobs] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const scrollViewRef = useRef<ScrollView>(null);
+  const { userId } = useAuth();
+
+  // --- CONVEX QUERIES ---
+    const currentUser = useQuery(
+      api.users.getUserByClerkId,
+      userId ? { clerkId: userId } : "skip"
+    );
+
+  useEffect(() => {
+      if (currentUser) {
+        // you can handle user-specific logic here
+      }
+    }, [currentUser]);
 
   // Fetch jobs and calculate real category counts
   useEffect(() => {
@@ -250,7 +271,7 @@ const HomeScreen = ({ onCategorySelect }: any) => {
       mainText: 'Meet us at EDEX Mid Year Expo 2025',
       dateText: '13th & 14th Sept. @ BMICH',
       stallText: 'Stall No R 51',
-      bgColor: '#6B5DD3',
+      bgColor: COLORS.primary,
       accentColor: '#dee2d5ff',
     },
     {
@@ -260,7 +281,7 @@ const HomeScreen = ({ onCategorySelect }: any) => {
       mainText: 'Join Our Career Workshop',
       dateText: 'Every Saturday @ 10:00 AM',
       stallText: 'Register Now - Free Entry',
-      bgColor: '#6B5DD3',
+      bgColor: COLORS.primary,
       accentColor: '#c1d9e6ff',
     },
     {
@@ -270,7 +291,7 @@ const HomeScreen = ({ onCategorySelect }: any) => {
       mainText: 'Premium Job Listings Available',
       dateText: 'Get Hired in 30 Days',
       stallText: 'Upload Your CV Today',
-      bgColor: '#6B5DD3',
+      bgColor: COLORS.primary,
       accentColor: '#d2e1ceff',
     },
   ];
@@ -287,21 +308,38 @@ const HomeScreen = ({ onCategorySelect }: any) => {
 
   return (
     <View style={styles.container}>
-      {/* <StatusBar barStyle="light-content" backgroundColor="#8177EA" /> */}
-      
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Choose Your Career Path</Text>
-        <TouchableOpacity style={styles.notificationButton}>
-          <MaterialIcons
-              name="notifications-none"
-              size={24}
-              color={COLORS.primary}
-            />
-        </TouchableOpacity>
-      </View>
 
-      {/* Search Bar */}
+      {/* Header */}
+              <View style={styles.header}>
+                <View style={styles.userInfo}>
+                  <Image
+                    source={{ uri: currentUser?.profileImage }}
+                    style={styles.avatar}
+                  />
+                  <View>
+                    <Text style={styles.userName}>{currentUser?.fullname}</Text>
+                    <Text style={styles.userType}>Silver member</Text>
+                  </View>
+                </View>
+      
+                <TouchableOpacity style={styles.notificationButton}>
+                  <MaterialIcons
+                    name="notifications-none"
+                    size={24}
+                    color={COLORS.primary}
+                  />
+                </TouchableOpacity>
+              </View>
+
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+              {/* search Card */}
+              <View style={styles.greetingCard}>
+                <View>
+                  <Text style={styles.greetingTitle}>
+                    Choose Your Career Path
+                  </Text>
+                  
+                  {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Text style={styles.searchIcon}>🔍</Text>
         <TextInput
@@ -312,8 +350,8 @@ const HomeScreen = ({ onCategorySelect }: any) => {
           onChangeText={setSearchQuery}
         />
       </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+                </View>
+              </View>
         {/* Hot Jobs Section */}
         <View style={styles.hotJobsSection}>
           <Text style={styles.hotJobsText}>
