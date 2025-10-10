@@ -8,18 +8,74 @@ export const styles = StyleSheet.create({
 
     container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: COLORS.surface,
   },
   header: {
-    backgroundColor: '#8177EA',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    marginRight: 12,
+    marginLeft: 16,
+    marginTop:12
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: COLORS.black,
+    marginTop:10
+  },
+  userType: {
+    fontSize: 12,
+    color: COLORS.lightFont,
+  },
+   iconButton: {
+    padding: 8,
+    borderRadius: 30,
+    backgroundColor: COLORS.surface,
+    marginRight: 15,
+    marginLeft: 10
+  },
+  notificationButton: {
+    padding: 8,
+    backgroundColor: COLORS.white,
+    borderRadius: 24,
+    marginRight:20,
+    marginTop: 10
+  },
+  greetingCard: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    position: "relative",
+    overflow: "hidden",
+    marginLeft: 15,
+    marginRight: 15
+  },
+  greetingTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: COLORS.white,
+    textAlign: "center",
+    marginBottom: 10
+  },
+  greetingSubtitle: {
+    marginTop: 6,
+    fontSize: 14,
+    color: COLORS.cardBackground,
   },
   headerTitle: {
-    color: '#ffffffff',
+    color: COLORS.black,
     fontSize: 18,
     fontWeight: '800',
   },
@@ -28,27 +84,31 @@ export const styles = StyleSheet.create({
     left: 16,
   },
   backButtonText: {
-    color: '#FFFFFF',
+    color: COLORS.white,
     fontSize: 16,
     fontWeight: '500',
-  },
-  notificationButton: {
-    padding: 8,
-    backgroundColor: COLORS.white,
-    borderRadius: 24,
-    position: "absolute",
-    right: 16,
   },
   notificationIcon: {
     fontSize: 24,
   },
   searchContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderBottomColor: '#E5E7EB',
+  },
+  searchContainer2: {
+    backgroundColor: COLORS.white,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginLeft: 10,
+    marginRight:10,
     borderBottomColor: '#E5E7EB',
   },
   searchIcon: {
@@ -67,7 +127,7 @@ export const styles = StyleSheet.create({
   hotJobsSection: {
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
   },
   hotJobsText: {
     fontSize: 20,
@@ -97,12 +157,12 @@ export const styles = StyleSheet.create({
     padding: 12,
   },
   bannerTopText: {
-    color: '#FFFFFF',
+    color: COLORS.white,
     fontSize: 20,
     fontWeight: 'bold',
   },
   bannerTopSubtext: {
-    color: '#FFFFFF',
+    color: COLORS.white,
     fontSize: 12,
   },
   bannerBottom: {
@@ -134,11 +194,11 @@ export const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#D1D5DB',
+    backgroundColor: COLORS.lighPurple,
     marginHorizontal: 4,
   },
   paginationDotActive: {
-    backgroundColor: '#8177EA',
+    backgroundColor: COLORS.primary,
     width: 24,
   },
   categoriesHeader: {
@@ -161,7 +221,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   toggleActive: {
-    color: '#8177EA',
+    color: COLORS.primary,
     fontWeight: '600',
     fontSize: 16,
   },
@@ -177,7 +237,7 @@ export const styles = StyleSheet.create({
   },
   categoryCard: {
     width: '30%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -201,7 +261,7 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   categoryBadge: {
-    backgroundColor: '#8177EA',
+    backgroundColor: COLORS.primary,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 6,
@@ -210,7 +270,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#9CA3AF',
   },
   categoryCount: {
-    color: '#FFFFFF',
+    color: COLORS.white,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -218,7 +278,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   categoryListItem: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: 16,
     flexDirection: 'row',
@@ -246,22 +306,23 @@ export const styles = StyleSheet.create({
     color: '#1F2937',
   },
   categoryBadgeList: {
-    backgroundColor: '#8177EA',
+    backgroundColor: COLORS.primary,
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 6,
   },
   categoryCountList: {
-    color: '#FFFFFF',
+    color: COLORS.white,
     fontSize: 14,
     fontWeight: '600',
   },
   detailsHeader: {
     padding: 16,
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
+    marginTop: 20
   },
   categoryIconLarge: {
     fontSize: 60,
@@ -274,18 +335,18 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
   },
   categoryBadgeLarge: {
-    backgroundColor: '#8177EA',
+    backgroundColor: COLORS.primary,
     paddingHorizontal: 20,
     paddingVertical: 6,
     borderRadius: 8,
   },
   categoryCountLarge: {
-    color: '#FFFFFF',
+    color: COLORS.white,
     fontSize: 16,
     fontWeight: '600',
   },
   jobCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -307,12 +368,12 @@ export const styles = StyleSheet.create({
     marginRight: 12,
   },
   companyLogoText: {
-    color: '#8177EA',
+    color: COLORS.primary,
     fontWeight: 'bold',
     fontSize: 20,
   },
   jobCompany: {
-    color: '#8177EA',
+    color: COLORS.primary,
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 4,

@@ -4,12 +4,11 @@ import {
   ActivityIndicator,
   FlatList,
   Linking,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 // 👇 Define a TypeScript interface for your job data
@@ -52,7 +51,7 @@ export default function App() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Job Search</Text>
@@ -111,7 +110,7 @@ export default function App() {
           )}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 
