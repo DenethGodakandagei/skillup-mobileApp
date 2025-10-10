@@ -1,11 +1,54 @@
 import { COLORS } from "@/constants/theme";
-import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { BookOpen, Briefcase, Home, Upload, User } from "lucide-react-native";
+import React, { useEffect, useRef } from "react";
+import { Animated, View } from "react-native";
+
+// 🔹 Reusable Icon Component with Animated Dot
+function TabIcon({ Icon, color, size, focused }: any) {
+  const dotAnim = useRef(new Animated.Value(0)).current; // initial opacity & translateY 0
+
+  useEffect(() => {
+    Animated.timing(dotAnim, {
+      toValue: focused ? 1 : 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  }, [focused]);
+
+  return (
+    <View style={{ alignItems: "center", justifyContent: "center" }}>
+      <Icon
+        color={color}
+        size={size + (focused ? 3 : 0)}
+        strokeWidth={focused ? 3 : 2}
+      />
+      <Animated.View
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: 3,
+          backgroundColor: COLORS.primary,
+          marginTop: 4,
+          opacity: dotAnim,
+          transform: [
+            {
+              translateY: dotAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [4, 0], // slide up slightly when appearing
+              }),
+            },
+          ],
+        }}
+      />
+    </View>
+  );
+}
 
 export default function TabLayout() {
   return (
-   <Tabs
-    screenOptions={{
+    <Tabs
+      screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
         tabBarActiveTintColor: COLORS.primary,
@@ -14,40 +57,63 @@ export default function TabLayout() {
             backgroundColor: COLORS.white,
             borderTopWidth: 0,
             position: "absolute",
-            elevation: 0,
-            height: 40,
+            elevation: 10, // Android shadow
+            height: 55,
+            paddingTop:10,
             paddingBottom: 8,
-        }
-    }}
-   >
-        <Tabs.Screen name="index"
-            options={{
-                tabBarIcon: ({color, size}) => <Ionicons name = "home" size={size} color={color}/>,
-            }}
-        />
-        
-        <Tabs.Screen name="isUpload"
-         options={{
-                tabBarIcon: ({color, size}) => <Ionicons name = "cloud-upload" size={size} color={color}/>,
-            }}
-        />
-        
-        <Tabs.Screen name="myLearn"
-         options={{
-                tabBarIcon: ({color, size}) => <Ionicons name = "book" size={size} color={color}/>,
-            }}
-        />
-        
-        <Tabs.Screen name="jobs"
-         options={{
-                tabBarIcon: ({color, size}) => <Ionicons name = "briefcase" size={size} color={color}/>,
-            }}
-        />
-        <Tabs.Screen name="profile"
-            options={{
-                tabBarIcon: ({color, size}) => <Ionicons name = "person-circle" size={size} color={color}/>,
-            }}
-        />
-   </Tabs>
-  )
+            // 💡 iOS Shadow
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: -3 }, // shadow above
+            shadowOpacity: 0.2,
+            shadowRadius: 6,
+  },
+}}
+
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon Icon={Home} color={color} size={size} focused={focused} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="isUpload"
+        options={{
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon Icon={Upload} color={color} size={size} focused={focused} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="myLearn"
+        options={{
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon Icon={BookOpen} color={color} size={size} focused={focused} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="jobs"
+        options={{
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon Icon={Briefcase} color={color} size={size} focused={focused} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon Icon={User} color={color} size={size} focused={focused} />
+          ),
+        }}
+      />
+    </Tabs>
+  );
 }
