@@ -1,13 +1,13 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React, { useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import {
-  Animated,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Animated,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 const JobRoleCard = ({ role, rank, onPress }) => {
@@ -28,13 +28,14 @@ const JobRoleCard = ({ role, rank, onPress }) => {
     }).start();
   };
 
-  const getMatchColor = (percentage) => {
+  // Memoize color and icon functions for better performance
+  const getMatchColor = useCallback((percentage) => {
     if (percentage >= 80) return ["#10b981", "#06d6a0"];
     if (percentage >= 60) return ["#f59e0b", "#f97316"];
     return ["#ef4444", "#dc2626"];
-  };
+  }, []);
 
-  const getGrowthIcon = (potential) => {
+  const getGrowthIcon = useCallback((potential) => {
     switch (potential?.toLowerCase()) {
       case "high":
         return "trending-up";
@@ -45,9 +46,9 @@ const JobRoleCard = ({ role, rank, onPress }) => {
       default:
         return "help-outline";
     }
-  };
+  }, []);
 
-  const getGrowthColor = (potential) => {
+  const getGrowthColor = useCallback((potential) => {
     switch (potential?.toLowerCase()) {
       case "high":
         return "#10b981";
@@ -58,7 +59,12 @@ const JobRoleCard = ({ role, rank, onPress }) => {
       default:
         return "#6b7280";
     }
-  };
+  }, []);
+
+  // Memoize computed values
+  const matchColors = useMemo(() => getMatchColor(role.match_percentage), [role.match_percentage, getMatchColor]);
+  const growthIcon = useMemo(() => getGrowthIcon(role.growth_potential), [role.growth_potential, getGrowthIcon]);
+  const growthColor = useMemo(() => getGrowthColor(role.growth_potential), [role.growth_potential, getGrowthColor]);
 
   // new handler for View Details
   const handleViewDetails = (title) => {
@@ -102,7 +108,7 @@ const JobRoleCard = ({ role, rank, onPress }) => {
           </View>
 
           <LinearGradient
-            colors={getMatchColor(role.match_percentage)}
+            colors={matchColors}
             style={styles.matchBadge}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -124,14 +130,14 @@ const JobRoleCard = ({ role, rank, onPress }) => {
           </View>
           <View style={styles.infoItem}>
             <MaterialIcons
-              name={getGrowthIcon(role.growth_potential)}
+              name={growthIcon}
               size={18}
-              color={getGrowthColor(role.growth_potential)}
+              color={growthColor}
             />
             <Text
               style={[
                 styles.infoText,
-                { color: getGrowthColor(role.growth_potential) },
+                { color: growthColor },
               ]}
             >
               {role.growth_potential || "Medium"} Growth
