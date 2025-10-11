@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
     Animated,
     Dimensions,
@@ -11,11 +11,32 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-const LoadingScreen = ({ message = 'Processing your CV...' }) => {
+const LoadingScreen = ({ message = 'Processing your CV...', stage = null }) => {
   const spinValue = useRef(new Animated.Value(0)).current;
   const scaleValue = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const stepAnim = useRef(new Animated.Value(0)).current;
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isCompleting, setIsCompleting] = useState(false);
+
+  // Memoize stage-specific messages for better performance
+  const stageMessages = useMemo(() => ({
+    'ocr': 'Extracting text from your CV...',
+    'analysis': 'Analyzing your skills and experience...',
+    'complete': 'Analysis complete! Preparing your results...'
+  }), []);
+
+  const displayMessage = stage ? stageMessages[stage] || message : message;
+  
+  // Add estimated time based on stage
+  const getEstimatedTime = (stage) => {
+    switch (stage) {
+      case 'ocr': return '30-60 seconds';
+      case 'analysis': return '15-30 seconds';
+      case 'complete': return 'Almost done!';
+      default: return '10-20 seconds';
+    }
+  };
 
   useEffect(() => {
     // Fade in animation
@@ -24,6 +45,11 @@ const LoadingScreen = ({ message = 'Processing your CV...' }) => {
       duration: 500,
       useNativeDriver: true,
     }).start();
+
+    // Timer for elapsed time
+    const timer = setInterval(() => {
+      setElapsedTime(prev => prev + 1);
+    }, 1000);
 
     // Spinning animation
     const spin = Animated.loop(
@@ -71,11 +97,25 @@ const LoadingScreen = ({ message = 'Processing your CV...' }) => {
     stepProgress.start();
 
     return () => {
+      clearInterval(timer);
       spin.stop();
       pulse.stop();
       stepProgress.stop();
     };
   }, [spinValue, scaleValue, fadeAnim, stepAnim]);
+
+  // Handle completion stage
+  useEffect(() => {
+    if (stage === 'complete' && !isCompleting) {
+      setIsCompleting(true);
+      // Stop spinning animation and show success
+      Animated.timing(spinValue, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [stage, isCompleting, spinValue]);
 
   const spinInterpolate = spinValue.interpolate({
     inputRange: [0, 1],
@@ -116,12 +156,28 @@ const LoadingScreen = ({ message = 'Processing your CV...' }) => {
           ]}
         >
           <View style={styles.iconBackground}>
-            <MaterialIcons name="psychology" size={80} color="#6366f1" />
+            <MaterialIcons 
+              name={stage === 'complete' ? "check-circle" : "psychology"} 
+              size={80} 
+              color={stage === 'complete' ? "#10b981" : "#6366f1"} 
+            />
           </View>
         </Animated.View>
 
         {/* Loading Message */}
-        <Text style={styles.loadingMessage}>{message}</Text>
+        <Text style={styles.loadingMessage}>{displayMessage}</Text>
+        
+        {/* Estimated Time */}
+        {stage && (
+          <Text style={styles.estimatedTime}>
+            Estimated time: {getEstimatedTime(stage)}
+          </Text>
+        )}
+        
+        {/* Elapsed Time */}
+        <Text style={styles.elapsedTime}>
+          Processing time: {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+        </Text>
 
         {/* Progress Steps */}
         <View style={styles.stepsContainer}>
@@ -279,10 +335,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 10,
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
+  },
+  estimatedTime: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontStyle: 'italic',
+  },
+  elapsedTime: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.6)',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   stepsContainer: {
     alignItems: 'center',
