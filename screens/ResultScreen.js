@@ -1,13 +1,16 @@
 // src/screens/ResultsScreen.js
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useSegments } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
 import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from "react-native";
 import JobRoleCard from "../components/JobRoleCard";
 import { useApp } from "../context/AppContext";
@@ -17,7 +20,19 @@ const ResultsScreen = () => {
   const router = useRouter();
   const { state, dispatch } = useApp();
   const { jobSuggestions } = state;
-  const segments = useSegments(); 
+  const segments = useSegments();
+  const [visibleJobs, setVisibleJobs] = useState(3); // Start with 3 jobs visible
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // Memoize job suggestions for better performance
+  const memoizedJobSuggestions = useMemo(() => {
+    return jobSuggestions?.suggested_roles || [];
+  }, [jobSuggestions]);
+
+  // Memoize visible jobs to prevent unnecessary re-renders
+  const visibleJobSuggestions = useMemo(() => {
+    return memoizedJobSuggestions.slice(0, visibleJobs);
+  }, [memoizedJobSuggestions, visibleJobs]); 
   
 const handleBack = () => {
     if (segments && segments.length > 1) {
@@ -32,6 +47,22 @@ const handleBack = () => {
     dispatch({ type: "RESET" });
     router.push("/");
   };
+
+  // Optimized load more function with debouncing
+  const loadMoreJobs = useCallback(() => {
+    if (isLoadingMore || visibleJobs >= memoizedJobSuggestions.length) return;
+    
+    setIsLoadingMore(true);
+    setTimeout(() => {
+      setVisibleJobs(prev => Math.min(prev + 2, memoizedJobSuggestions.length));
+      setIsLoadingMore(false);
+    }, 300); // Small delay for smooth UX
+  }, [isLoadingMore, visibleJobs, memoizedJobSuggestions.length]);
+
+  // Memoized render function for job cards
+  const renderJobCard = useCallback(({ item, index }) => (
+    <JobRoleCard key={index} role={item} rank={index + 1} />
+  ), []);
 
   if (!jobSuggestions || !jobSuggestions.suggested_roles) {
     return (
@@ -108,13 +139,38 @@ const handleBack = () => {
       {/* Job Suggestions Section */}
       <View style={styles.suggestionsHeader}>
         <Text style={styles.suggestionsTitle}>
-          Recommended Job Roles ({jobSuggestions.suggested_roles?.length || 0})
+          Recommended Job Roles ({memoizedJobSuggestions.length})
         </Text>
       </View>
 
-      {jobSuggestions.suggested_roles?.map((role, index) => (
-        <JobRoleCard key={index} role={role} rank={index + 1} />
-      ))}
+      {/* Optimized job list with lazy loading */}
+      <FlatList
+        data={visibleJobSuggestions}
+        renderItem={renderJobCard}
+        keyExtractor={(item, index) => `job-${index}`}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={false} // Disable FlatList scroll since we're inside ScrollView
+        ListFooterComponent={() => (
+          visibleJobs < memoizedJobSuggestions.length ? (
+            <TouchableOpacity
+              style={styles.loadMoreButton}
+              onPress={loadMoreJobs}
+              disabled={isLoadingMore}
+            >
+              {isLoadingMore ? (
+                <ActivityIndicator size="small" color="#6366f1" />
+              ) : (
+                <>
+                  <MaterialIcons name="expand-more" size={20} color="#6366f1" />
+                  <Text style={styles.loadMoreText}>
+                    Load More ({memoizedJobSuggestions.length - visibleJobs} remaining)
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+          ) : null
+        )}
+      />
 
       <TouchableOpacity
         style={styles.newAnalysisButton}
@@ -294,6 +350,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#9ca3af",
     textAlign: "center",
+  },
+  loadMoreButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 15,
+    padding: 15,
+    backgroundColor: "#f0f4ff",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#c7d2fe",
+  },
+  loadMoreText: {
+    color: "#6366f1",
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 8,
   },
 });
 
