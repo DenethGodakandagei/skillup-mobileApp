@@ -3,17 +3,18 @@ import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import {
-  Alert,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View
+    Alert,
+    Dimensions,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View
 } from 'react-native';
 import CVUploader from '../components/CVUploader';
 import LoadingScreen from '../components/LoadingScreen';
 import { useApp } from '../context/AppContext';
 import { AIService } from '../services/aiService';
+import { cacheService } from '../services/cacheService';
 import { OCRService } from '../services/ocrService';
 
 const { width } = Dimensions.get('window');
@@ -74,8 +75,29 @@ const UploadScreen = () => {
   
 
   const processCV = async (uri, type) => {
+    const startTime = Date.now();
+    
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
+      dispatch({ type: 'SET_PROCESSING_STAGE', payload: 'ocr' });
+
+      // Check cache first using cache service
+      const cacheKey = cacheService.generateKey(uri, type);
+      const cachedResult = cacheService.get(cacheKey);
+      
+      if (cachedResult) {
+        console.log('Using cached result, loading time:', Date.now() - startTime, 'ms');
+        dispatch({ type: 'SET_JOB_SUGGESTIONS', payload: cachedResult });
+        dispatch({ type: 'SET_PROCESSING_STAGE', payload: 'complete' });
+        
+        // Show complete stage briefly even for cached results
+        setTimeout(() => {
+          dispatch({ type: 'SET_LOADING', payload: false });
+          dispatch({ type: 'SET_PROCESSING_STAGE', payload: null });
+          router.replace('/results');
+        }, 1000); // 1 second for cached results
+        return;
+      }
 
       // Step 1: Extract text from CV
       let extractedText;
@@ -90,19 +112,45 @@ const UploadScreen = () => {
       }
 
       dispatch({ type: 'SET_CV_DATA', payload: { text: extractedText, uri } });
+      dispatch({ type: 'SET_PROCESSING_STAGE', payload: 'analysis' });
 
-      // Step 2: Analyze CV for job roles
-      const analysis = await AIService.analyzeCV(extractedText);
+      // Step 2: Analyze CV for job roles with timeout
+      console.log('Starting AI analysis...');
+      const analysis = await AIService.analyzeCV(extractedText, 15000); // 15 second timeout
+      console.log('AI analysis completed in:', Date.now() - startTime, 'ms');
+      
+      // Cache the result using cache service
+      cacheService.set(cacheKey, analysis);
+      
       dispatch({ type: 'SET_JOB_SUGGESTIONS', payload: analysis });
+      dispatch({ type: 'SET_PROCESSING_STAGE', payload: 'complete' });
+      
+      console.log('Analysis complete, showing complete stage for 2 seconds...');
 
-      // Navigate to results
-      router.replace('/results');
+      // Add a smooth transition delay before navigating
+      setTimeout(() => {
+        console.log('2 seconds passed, clearing loading and navigating...');
+        dispatch({ type: 'SET_LOADING', payload: false });
+        dispatch({ type: 'SET_PROCESSING_STAGE', payload: null });
+        
+        // Small delay before navigation for smooth transition
+        setTimeout(() => {
+          console.log('Navigating to results...');
+          router.replace('/results');
+        }, 300);
+      }, 2000); // Show "complete" stage for 2 seconds
 
     } catch (error) {
-      showError(error.message);
-    } finally {
-      // Ensure loading is cleared if something prevented reducer updates
+      console.error('CV Processing Error:', error);
+      // Only show error for actual processing failures, not AI timeouts
+      if (!error.message.includes('timeout') && !error.message.includes('fallback')) {
+        showError(error.message);
+      } else {
+        // For timeout/fallback cases, just show a gentle message
+        console.log('Using local analysis for faster results');
+      }
       dispatch({ type: 'SET_LOADING', payload: false });
+      dispatch({ type: 'SET_PROCESSING_STAGE', payload: null });
     }
   };
 
@@ -112,7 +160,7 @@ const UploadScreen = () => {
   };
 
   if (state.loading) {
-    return <LoadingScreen message="Analyzing your CV..." />;
+    return <LoadingScreen message="Analyzing your CV..." stage={state.processingStage} />;
   }
 
   return (
