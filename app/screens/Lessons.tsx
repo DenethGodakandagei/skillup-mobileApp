@@ -760,7 +760,7 @@ export default function Lessons() {
 
       <View style={styles.footer}>
         <TouchableOpacity
-          style={[styles.navButton, isFirstSubLesson && styles.navButtonDisabled]}
+          style={[styles.previousButton, isFirstSubLesson && styles.navButtonDisabled]}
           onPress={handlePrevious}
           disabled={isFirstSubLesson}
           activeOpacity={0.8}
@@ -768,7 +768,7 @@ export default function Lessons() {
           <Text style={styles.previousText}>Previous</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navButton} onPress={handleNext} activeOpacity={0.8}>
+        <TouchableOpacity style={styles.nextButton} onPress={handleNext} activeOpacity={0.8}>
           <Text style={styles.navButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
