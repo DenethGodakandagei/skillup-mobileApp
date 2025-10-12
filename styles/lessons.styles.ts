@@ -134,13 +134,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  nextButton: {
-    backgroundColor: COLORS.primary,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   nextButtonText: {
     color: "#ffffff",
     fontWeight: "bold",
@@ -173,18 +166,23 @@ export const styles = StyleSheet.create({
 
   footer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 15,
     padding: 14,
     backgroundColor: COLORS.white,
 },
-navButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+nextButton: {
+    flex:1,
     borderRadius: 8,
+    padding: 10,
     backgroundColor: COLORS.primary, // Use your primary color
-    marginHorizontal: 5,
     alignItems: 'center',
-    width:110,
+},
+previousButton: {
+    flex:1,
+    borderRadius: 8,
+    padding: 10,
+    backgroundColor: COLORS.primary, // Use your primary color
+    alignItems: 'center',
 },
 navButtonText: {
     color: '#fff',
